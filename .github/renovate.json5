@@ -1,0 +1,39 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:base", "regexManagers:dockerfileVersions"],
+  assignees: ["allenporter"],
+  regexManagers: [
+    {
+      fileMatch: [".+\\.yaml$"],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG) .+?_version: (?<currentValue>.+?)\\s",
+      ],
+    },
+  ],
+  packageRules: [
+    {
+      description: "Minor updates are automatic",
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      description: "Development requirements: minor updates are silent",
+      matchFiles: ["requirements.txt", "Dockerfile"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      description: "Development requirements: updated weekly",
+      matchFiles: ["requirements.txt", "Dockerfile"],
+      extends: ["schedule:weekends"],
+      automerge: true,
+      stabilityDays: 1,
+      matchUpdateTypes: ["major"],
+    },
+  ],
+  "pre-commit": {
+    enabled: true,
+  },
+}
