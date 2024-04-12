@@ -21,7 +21,7 @@ on the keypad.
 | ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `alarm_disarm`   | `button: disarm` or `button: code_entered` and `code: <code>` | Diarm button or user entered a code to disarm                                       |
 | `alarm_arm_away` | `button: arm_away`                                            | Arm Away                                                                            |
-| `alarm_arm_stay` | `button: arm_stay`                                            | Arm Stay                                                                            |
+| `alarm_arm_home` | `button: arm_stay`                                            | Arm Stay                                                                            |
 | `pressed`        | `button: code_started`                                        | User started entering a code                                                        |
 | `pressed`        | `button: code_timeout`                                        | User entered a code, but didn't press enter (or another button) before the timeout. |
 | `pressed`        | `button: code_cancel`                                         | Cancel                                                                              |
