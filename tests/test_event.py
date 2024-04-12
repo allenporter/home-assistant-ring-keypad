@@ -12,26 +12,18 @@ import pytest
 
 MESSAGE = """
 ---
-event_type: zwave_js_notification
-data:
-  domain: zwave_js
-  node_id: 30
-  home_id: 3949593794
-  endpoint: 0
-  device_id: {device_id}
-  command_class: 111
-  command_class_name: Entry Control
-  event_type: {event_type}
-  event_type_label: Ignored
-  data_type: 0
-  data_type_label: None
-  event_data: {event_data}
-origin: LOCAL
-time_fired: "2024-04-12T04:40:16.516475+00:00"
-context:
-  id: 01HV89PDC4BG7Y6AVQQ1YS8EQK
-  parent_id: null
-  user_id: null
+domain: zwave_js
+node_id: 30
+home_id: 3949593794
+endpoint: 0
+device_id: {device_id}
+command_class: 111
+command_class_name: Entry Control
+event_type: {event_type}
+event_type_label: Ignored
+data_type: 0
+data_type_label: None
+event_data: {event_data}
 """
 
 

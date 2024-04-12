@@ -68,7 +68,7 @@ class RingKeypadEventEntity(EventEntity):
     def _async_handle_event(self, event: dict[str, Any]) -> None:
         """Handle the demo button event."""
         _LOGGER.debug("Received ZWave notification: data=%s", event.data)
-        event_data = event.data.get("data", {})
+        event_data = event.data
         if (
             not (device_id := event_data.get(CONF_DEVICE_ID))
             or device_id != self._device_id
