@@ -5,7 +5,8 @@ https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md
 """
 
 import enum
-#from dataclasses import dataclass
+
+# from dataclasses import dataclass
 from homeassistant.const import (
     STATE_ALARM_ARMED_AWAY,
     STATE_ALARM_ARMED_HOME,
@@ -21,24 +22,19 @@ COMMAND_CLASS = "135"
 ENDPOINT = 0
 
 
-class KeypadEvent(enum.IntEnum):
-    """Events from the user interacting with the keypad."""
-
-    # Keypad code detailed events
-    CODE_STARTED = 0
-    CODE_TIMEOUT = 1
-    CODE_CANCEL = 25
-
-    CODE_ENTERED = 2  # Event also contains `trigger.event.data.event_data``
-
-    # Mode buttons
-    DISARM = 3
-    ARM_AWAY = 5
-    ARM_HOME = 6
-
-    FIRE = 16
-    POLICE = 17
-    MEDICAL = 19
+# Mapping of keypad event name and number to event entity event type
+KEYAD_EVENTS = [
+    ("code_started", 0, "pressed"),
+    ("code_timeout", 1, "pressed"),
+    ("code_cancel", 25, "pressed"),
+    ("code_entered", 2, "alarm_disarm"),
+    ("disarm", 3, "alarm_disarm"),
+    ("arm_away", 5, "alarm_arm_away"),
+    ("arm_stay", 6, "alarm_arm_home"),
+    ("fire", 16, "pressed"),
+    ("police", 17, "pressed"),
+    ("medical", 19, "pressed"),
+]
 
 
 # @dataclass

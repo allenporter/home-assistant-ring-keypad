@@ -11,7 +11,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.device_registry import DeviceInfo
 
-from .model import KeypadEvent
+from .model import KEYAD_EVENTS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,7 +19,13 @@ ZWAVE_NOTIFICATION = "zwave_js_notification"
 CONF_EVENT_TYPE = "event_type"
 CONF_EVENT_DATA = "event_data"
 
-EVENT_TYPES = {event.value: event.name.lower() for event in list(KeypadEvent)}
+KEYPAD_EVENT_TYPES = {
+    keypad_event_type: name for name, keypad_event_type, _ in KEYAD_EVENTS
+}
+ENTITY_EVENT_TYPES = {
+    keypad_event_type: entity_event_type
+    for _, keypad_event_type, entity_event_type in KEYAD_EVENTS
+}
 
 
 async def async_setup_entry(
@@ -47,7 +53,7 @@ class RingKeypadEventEntity(EventEntity):
 
     _attr_has_entity_name = True
     _attr_device_class = EventDeviceClass.BUTTON
-    _attr_event_types = list(EVENT_TYPES.values())
+    _attr_event_types = list(ENTITY_EVENT_TYPES.values())
     _attr_should_poll = False
 
     def __init__(self, config_entry_id: str, device_entry: dr.DeviceEntry) -> None:
@@ -71,14 +77,16 @@ class RingKeypadEventEntity(EventEntity):
         if (event_type := event_data.get(CONF_EVENT_TYPE)) is None:
             return
         _LOGGER.debug("Received ZWave notification for keypad: %s", event)
-        if not (event_type_name := EVENT_TYPES.get(event_type)):
+        if not (event_type_name := ENTITY_EVENT_TYPES.get(event_type)):
             _LOGGER.info(
                 "Ring Keypad received ZWave notification with unknown event type: %s",
                 event_type_name,
             )
             return
+        keypad_event_type = KEYPAD_EVENT_TYPES[event_type]
         self._trigger_event(
-            event_type_name, {"code": event_data.get(CONF_EVENT_DATA)}
+            event_type_name,
+            {"button": keypad_event_type, "code": event_data.get(CONF_EVENT_DATA)},
         )
         self.async_write_ha_state()
 

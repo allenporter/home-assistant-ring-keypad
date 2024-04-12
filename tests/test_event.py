@@ -49,19 +49,19 @@ async def test_default_state(hass: HomeAssistant) -> None:
 
 
 @pytest.mark.parametrize(
-    ("event_type", "event_type_name", "event_data"),
+    ("event_type", "event_type_name", "entity_event_type", "event_data"),
     [
-        (0, "code_started", None),
-        (1, "code_timeout", None),
-        (2, "code_entered", "1234"),
-        (3, "disarm", None),
-        (5, "arm_away", None),
-        (6, "arm_home", None),
-        (16, "fire", None),
-        (17, "police", None),
-        (19, "medical", None),
-        (25, "code_cancel", None),
-        (12345, None, None),  # Unknown
+        (0, "code_started", "pressed", None),
+        (1, "code_timeout", "pressed", None),
+        (2, "code_entered", "alarm_disarm", "1234"),
+        (3, "disarm", "alarm_disarm", None),
+        (5, "arm_away", "alarm_arm_away", None),
+        (6, "arm_stay", "alarm_arm_home", None),
+        (16, "fire", "pressed", None),
+        (17, "police", "pressed", None),
+        (19, "medical", "pressed", None),
+        (25, "code_cancel", "pressed", None),
+        (12345, None, None, None),  # Unknown
     ],
 )
 async def test_event_message(
@@ -69,6 +69,7 @@ async def test_event_message(
     zwave_device_id: str,
     event_type: int,
     event_type_name: str | None,
+    entity_event_type: str,
     event_data: str | None,
 ) -> None:
     """Test event entity published."""
@@ -88,7 +89,8 @@ async def test_event_message(
 
     state = hass.states.get("event.device_name_button")
     assert state is not None
-    assert state.attributes.get("event_type") == event_type_name
+    assert state.attributes.get("event_type") == entity_event_type
+    assert state.attributes.get("button") == event_type_name
     assert state.attributes.get("code") == event_data
 
 

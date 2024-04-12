@@ -11,19 +11,20 @@ Ring Keypad key-presses are [published as events](https://github.com/ImSorryButW
 that can be used to simplify automations rather than relying on
 lower level event codes.
 
+The idea here is to translate the more complex events into simpler events
+that can be bound to alarm control panel services.
 
+Below are the attributes for the event entity and how they relate to the buttons
+on the keypad.
 
-This event was generated from entering the code "1234", and pressing the Enter button.  The `event_data` field tells you what code was entered, and the `event_type` tells you which button was pressed.  The following table explains the meanings of the different `event_type` values the keypad can produce:
-
-| `event_type` | Meaning |
-| ------------ | ------- |
-| `code_started` | User started entering a code |
-| `code_timeout` | User entered a code, but didn't press enter (or another button) before the timeout. |
-| `code_cancel` | Cancel |
-| `code_entered` | User entered a code, and the event also contains a field `code` with the code |
-| `disarm` | Disarm |
-| `arm_away` | Arm Away |
-| `arm_stay` | Arm Stay |
-| `fire` | Fire (not sent unless button is held down until all 3 lights go out) |
-| `police` | Police (not sent unless button is held down until all 3 lights go out) |
-| `medical` | Medical (not sent unless button is held down until all 3 lights go out) |
+| `event_type`     | Additional attributes                                         | Meaning                                                                             |
+| ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `alarm_disarm`   | `button: disarm` or `button: code_entered` and `code: <code>` | Diarm button or user entered a code to disarm                                       |
+| `alarm_arm_away` | `button: arm_away`                                            | Arm Away                                                                            |
+| `alarm_arm_stay` | `button: arm_stay`                                            | Arm Stay                                                                            |
+| `pressed`        | `button: code_started`                                        | User started entering a code                                                        |
+| `pressed`        | `button: code_timeout`                                        | User entered a code, but didn't press enter (or another button) before the timeout. |
+| `pressed`        | `button: code_cancel`                                         | Cancel                                                                              |
+| `pressed`        | `button: fire`                                                | Fire (not sent unless button is held down until all 3 lights go out)                |
+| `pressed`        | `button: police`                                              | Police (not sent unless button is held down until all 3 lights go out)              |
+| `pressed`        | `button: medical`                                             | Medical (not sent unless button is held down until all 3 lights go out)             |
