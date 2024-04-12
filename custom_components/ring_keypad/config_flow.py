@@ -1,4 +1,4 @@
-"""Config flow for Ring Keybad integration."""
+"""Config flow for Ring Keypad integration."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ CONFIG_FLOW = {
     "user": SchemaFlowFormStep(
         vol.Schema(
             {
-                vol.Required(CONF_DEVICE_ID): selector.EntitySelector(
+                vol.Required(CONF_DEVICE_ID): selector.DeviceSelector(
                     selector.DeviceSelectorConfig(integration="zwave_js")
                 ),
             }
