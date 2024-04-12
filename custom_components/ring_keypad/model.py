@@ -4,10 +4,8 @@ The details for the events and commands are described here:
 https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md
 """
 
-#
-
 import enum
-from dataclasses import dataclass
+#from dataclasses import dataclass
 from homeassistant.const import (
     STATE_ALARM_ARMED_AWAY,
     STATE_ALARM_ARMED_HOME,
