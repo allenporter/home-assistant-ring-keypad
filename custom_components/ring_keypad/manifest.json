@@ -2,6 +2,7 @@
   "domain": "ring_keypad",
   "name": "Ring Keybad exposed from Z-Wave",
   "config_flow": true,
+  "codeowners": ["@allenporter"],
   "documentation": "https://github.com/allenporter/home-assistant-ring-keypad",
   "integration_type": "helper",
   "iot_class": "calculated",
