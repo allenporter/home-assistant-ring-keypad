@@ -89,7 +89,7 @@ async def test_event_message(
     state = hass.states.get("event.device_name_button")
     assert state is not None
     assert state.attributes.get("event_type") == event_type_name
-    assert state.attributes.get("event_data") == event_data
+    assert state.attributes.get("code") == event_data
 
 
 async def test_invalid_device_id(hass: HomeAssistant) -> None:

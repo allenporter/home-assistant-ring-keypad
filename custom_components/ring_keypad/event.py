@@ -78,7 +78,7 @@ class RingKeypadEventEntity(EventEntity):
             )
             return
         self._trigger_event(
-            event_type_name, {"event_data": event_data.get(CONF_EVENT_DATA)}
+            event_type_name, {"code": event_data.get(CONF_EVENT_DATA)}
         )
         self.async_write_ha_state()
 
