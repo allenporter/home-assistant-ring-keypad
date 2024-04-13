@@ -43,15 +43,14 @@ Sets the state of the alarm control panel.
     alarm_state: armed_away
 ```
 
-| `alarm_state` | Description |
-| ---------- | ----------- |
-| `disarmed` | Disarmed.  Keypad says "Disarmed," disarmed light lights up on motion. |
-| `armed_home` | Armed Home.  Keypad says "Home and armed," armed stay light lights up on motion. |
-| `armed_away` | Armed Away.  Keypad says "Away and armed," armed away light lights up on motion. |
-| `arming` |  Exit delay, about to arm. Keypad says "Exit delay started." Plays sound, speeding up near end of specified duration. Bar shows countup. The delay is currently hard coded to 45 seconds. |
-| `pending` | Pending, about to trigger. Keypad says "Entry delay started." Plays sound, speeding up near end of specified duration. The delay is currently hard coded to 30 seconds. |
-| `triggered` | Trigger the alarm. This is equivalent to calling the Alarm service with `burglar`. |
-
+| `alarm_state` | Description                                                                                                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disarmed`    | Disarmed. Keypad says "Disarmed," disarmed light lights up on motion.                                                                                                                    |
+| `armed_home`  | Armed Home. Keypad says "Home and armed," armed stay light lights up on motion.                                                                                                          |
+| `armed_away`  | Armed Away. Keypad says "Away and armed," armed away light lights up on motion.                                                                                                          |
+| `arming`      | Exit delay, about to arm. Keypad says "Exit delay started." Plays sound, speeding up near end of specified duration. Bar shows countup. The delay is currently hard coded to 45 seconds. |
+| `pending`     | Pending, about to trigger. Keypad says "Entry delay started." Plays sound, speeding up near end of specified duration. The delay is currently hard coded to 30 seconds.                  |
+| `triggered`   | Trigger the alarm. This is equivalent to calling the Alarm service with `burglar`.                                                                                                       |
 
 ### Alarm
 
@@ -65,14 +64,13 @@ The Alarm service will sound an alarm from the Ring Keypad.
     alarm: burglar
 ```
 
-| `alarm` | Description |
-| ----- | ----------- |
-| `generic` | Generic alarm.  Plays alarm, flashes light until another mode is selected. |
-| `burglar` | Burglar alarm.  Identical to generic.  |
-| `smoke` | Smoke alarm.  Plays smoke alarm, flashes light until another mode is selected.|
-| `co2` | Carbon monoxide alarm.  Plays intermittent beeping alarm, flashes light until another mode is selected.  |
-| `medical` |  Medical alarm.  Medical button lights, bar flashes.  No alarm sound plays. |
-
+| `alarm`   | Description                                                                                            |
+| --------- | ------------------------------------------------------------------------------------------------------ |
+| `generic` | Generic alarm. Plays alarm, flashes light until another mode is selected.                              |
+| `burglar` | Burglar alarm. Identical to generic.                                                                   |
+| `smoke`   | Smoke alarm. Plays smoke alarm, flashes light until another mode is selected.                          |
+| `co2`     | Carbon monoxide alarm. Plays intermittent beeping alarm, flashes light until another mode is selected. |
+| `medical` | Medical alarm. Medical button lights, bar flashes. No alarm sound plays.                               |
 
 ### Chime
 
@@ -87,10 +85,10 @@ specified chime sound.
     chime: double_beep
 ```
 
-| `chime` | Description |
-| ----- | ----------- |
-| `double_beep` | Electronic double beep  |
-| `guitar_riff` | Guitar riff  |
-| `wind_chime` | Wind chimes |
-| `bing_bong` | Echoey Bing Bong |
-| `doorbell` | Ring doorbell chime  |
+| `chime`       | Description            |
+| ------------- | ---------------------- |
+| `double_beep` | Electronic double beep |
+| `guitar_riff` | Guitar riff            |
+| `wind_chime`  | Wind chimes            |
+| `bing_bong`   | Echoey Bing Bong       |
+| `doorbell`    | Ring doorbell chime    |
