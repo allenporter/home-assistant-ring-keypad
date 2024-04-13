@@ -1,5 +1,34 @@
 {
   "title": "Ring Keypad",
+  "entity": {
+    "entity": {
+      "event": {
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "pressed": "Pressed",
+              "alarm_disarm": "Disarm",
+              "alarm_arm_away": "Arm Away",
+              "alarm_arm_home": "Arm Home"
+            }
+          },
+          "button": {
+            "state": {
+              "code_started": "Code Started",
+              "code_timeout": "Code Timeout",
+              "code_cancel": "Code Cancel",
+              "code_entered": "Code Entered",
+              "arm_away": "Arm Away",
+              "arm_stay": "Arm Home",
+              "fire": "Fire",
+              "police": "Police",
+              "medical": "Medica"
+            }
+          }
+        }
+      }
+    }
+  },
   "selector": {
     "alarm_state": {
       "options": {
