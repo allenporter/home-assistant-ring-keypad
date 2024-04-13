@@ -55,7 +55,7 @@
       "name": "Notify Alarm",
       "description": "Send an Alarm notification to the Ring Keypad.",
       "fields": {
-        "chime": {
+        "alarm": {
           "name": "Alarm",
           "description": "The alarm to send to the Ring Keypad."
         }
