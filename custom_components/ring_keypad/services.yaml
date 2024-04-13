@@ -1,0 +1,52 @@
+update_alarm_state:
+  target:
+    entity:
+      domain: zwave_js
+  fields:
+    alarm_state:
+      required: true
+      example: "armed_away"
+      selector:
+        select:
+          translation_key: "alarm_state"
+          options:
+            - "armed_away"
+            - "armed_home"
+            - "arming"
+            - "disarmed"
+            - "pending"
+            - "triggered"
+chime:
+  target:
+    entity:
+      domain: zwave_js
+  fields:
+    chime:
+      required: true
+      example: "double_beep"
+      selector:
+        select:
+          translation_key: "chime"
+          options:
+            - "double_beep"
+            - "guitar_riff"
+            - "wind_chime"
+            - "bing_bong"
+            - "doorbell"
+alarm:
+  target:
+    entity:
+      domain: zwave_js
+  fields:
+    alarm:
+      required: true
+      example: "generic"
+      selector:
+        select:
+          translation_key: "alarm"
+          options:
+            - "generic"
+            - "burglar"
+            - "smoke"
+            - "co2"
+            - "medical"

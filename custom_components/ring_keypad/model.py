@@ -6,7 +6,6 @@ https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md
 
 import enum
 
-# from dataclasses import dataclass
 from homeassistant.const import (
     STATE_ALARM_ARMED_AWAY,
     STATE_ALARM_ARMED_HOME,
@@ -20,6 +19,10 @@ from homeassistant.const import (
 EVENT_COMMAND_CLASS = "111"
 COMMAND_CLASS = "135"
 ENDPOINT = 0
+MODE_PROPERTY_KEY = 1
+DELAY_PROPERTY_KEY = 7
+NOTIFICATION_SOUND_PROPERTY_KEY = 9
+MAX_VALUE = 100
 
 
 # Mapping of keypad event name and number to event entity event type
@@ -35,13 +38,6 @@ KEYAD_EVENTS = [
     ("police", 17, "pressed"),
     ("medical", 19, "pressed"),
 ]
-
-
-# @dataclass
-# class Command:
-#     property: int
-#     property_key: int
-#     value: int
 
 
 class Messages(enum.IntEnum):
@@ -66,15 +62,10 @@ class Delays(enum.IntEnum):
     EXIT_DELAY = 18
 
 
-class Sound(enum.IntEnum):
-    # Property key 9
-    ELECTRONIC_DOUBLE_BEEP = 96
-    GUITAR_RIFF = 97
-    WIND_CHIME = 98
-    BING_BONG = 99
-    DOORBELL = 100
+EXIT_DELAY_SECONDS = 45
+ENTRY_DELAY_SECONDS = 30
 
-
+# Mapping of Home Assistant entity state to keypad messages
 ALARM_STATE = {
     STATE_ALARM_ARMED_AWAY: Messages.ARMED_AWAY,
     STATE_ALARM_ARMED_HOME: Messages.ARMED_HOME,
@@ -84,13 +75,65 @@ ALARM_STATE = {
     STATE_ALARM_TRIGGERED: Messages.BURGLAR_ALARM,
 }
 
+CHIME = {
+    "double_beep": 96,
+    "guitar_riff": 97,
+    "wind_chime": 98,
+    "bing_bong": 99,
+    "doorbell": 100,
+}
 
-# def notification_command(status: Notification) -> Command:
-#     """Notification."""
-#     return {
-#         "command_class": COMMAND_CLASS,
-#         "endpoint": ENDPOINT,
-#         "property": int(status),
-#         "property_key": 1,
-#         "value": 100,
-#     }
+ALARM = {
+    "generic": Messages.GENERIC_ALARM,
+    "burglar": Messages.BURGLAR_ALARM,
+    "smoke": Messages.SMOKE_ALARM,
+    "co2": Messages.CO2_ALARM,
+    "medical": Messages.MEDICAL_ALARM,
+}
+
+
+def alarm_state_command(state: str) -> dict[str, str]:
+    """Return a zwave command for updating the alarm state."""
+    if not (message := ALARM_STATE.get(state)):
+        raise ValueError(f"Invalid alarm state command: {state}")
+    property_key = MODE_PROPERTY_KEY
+    value = MAX_VALUE
+    if isinstance(message, Delays):
+        property_key = 7
+        if message == Delays.EXIT_DELAY:
+            value = EXIT_DELAY_SECONDS
+        else:
+            value = ENTRY_DELAY_SECONDS
+    return {
+        "command_class": COMMAND_CLASS,
+        "endpoint": ENDPOINT,
+        "property": int(message),
+        "property_key": property_key,
+        "value": value,
+    }
+
+
+def alarm_command(alarm: str) -> dict[str, str]:
+    """Return a zwave command for sounding an alarm command."""
+    if not (property := ALARM.get(alarm)):
+        raise ValueError(f"Invalid chime command: {alarm}")
+    return {
+        "command_class": COMMAND_CLASS,
+        "endpoint": ENDPOINT,
+        "property": int(property),
+        "property_key": MODE_PROPERTY_KEY,
+        "value": MAX_VALUE,
+    }
+
+
+def chime_command(chime: str) -> dict[str, str]:
+    """Return a zwave command for sending a chime."""
+    if not (property := CHIME.get(chime)):
+        raise ValueError(f"Invalid chime command: {chime}")
+    return {
+        "command_class": COMMAND_CLASS,
+        "endpoint": ENDPOINT,
+        "property": int(property),
+        "property_key": NOTIFICATION_SOUND_PROPERTY_KEY,
+        "value": MAX_VALUE,
+    }
