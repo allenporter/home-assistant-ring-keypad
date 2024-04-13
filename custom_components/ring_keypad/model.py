@@ -42,7 +42,7 @@ KEYAD_EVENTS = [
 ]
 
 
-class Messages(enum.IntEnum):
+class Message(enum.IntEnum):
     # Property key 1
     INVALID_CODE = 9
     NEED_BYPASS = 16
@@ -58,36 +58,48 @@ class Messages(enum.IntEnum):
     MEDICAL_ALARM = 19
 
 
-class Delays(enum.IntEnum):
+class Delay(enum.IntEnum):
     # Property key 7
     ENTRY_DELAY = 17
     EXIT_DELAY = 18
 
 
+class NotificationSound(enum.IntEnum):
+    """Notification sounds."""
+
+    DOUBLE_BEEP = 96
+    GUITAR_RIFF = 97
+    WIND_CHIME = 98
+    BING_BONG = 99
+    DOORBELL = 100
+
+
 # Mapping of Home Assistant entity state to keypad messages
 ALARM_STATE = {
-    STATE_ALARM_ARMED_AWAY: Messages.ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME: Messages.ARMED_HOME,
-    STATE_ALARM_ARMING: Delays.EXIT_DELAY,
-    STATE_ALARM_DISARMED: Messages.DISARMED,
-    STATE_ALARM_PENDING: Delays.ENTRY_DELAY,
-    STATE_ALARM_TRIGGERED: Messages.BURGLAR_ALARM,
+    STATE_ALARM_ARMED_AWAY: Message.ARMED_AWAY,
+    STATE_ALARM_ARMED_HOME: Message.ARMED_HOME,
+    STATE_ALARM_ARMING: Delay.EXIT_DELAY,
+    STATE_ALARM_DISARMED: Message.DISARMED,
+    STATE_ALARM_PENDING: Delay.ENTRY_DELAY,
+    STATE_ALARM_TRIGGERED: Message.BURGLAR_ALARM,
 }
 
 CHIME = {
-    "double_beep": 96,
-    "guitar_riff": 97,
-    "wind_chime": 98,
-    "bing_bong": 99,
-    "doorbell": 100,
+    "invalid_code": Message.INVALID_CODE,
+    "need_bypass": Message.NEED_BYPASS,
+    "double_beep": NotificationSound.DOUBLE_BEEP,
+    "guitar_riff": NotificationSound.GUITAR_RIFF,
+    "wind_chime": NotificationSound.WIND_CHIME,
+    "bing_bong": NotificationSound.BING_BONG,
+    "doorbell": NotificationSound.DOORBELL,
 }
 
 ALARM = {
-    "generic": Messages.GENERIC_ALARM,
-    "burglar": Messages.BURGLAR_ALARM,
-    "smoke": Messages.SMOKE_ALARM,
-    "co2": Messages.CO2_ALARM,
-    "medical": Messages.MEDICAL_ALARM,
+    "generic": Message.GENERIC_ALARM,
+    "burglar": Message.BURGLAR_ALARM,
+    "smoke": Message.SMOKE_ALARM,
+    "co2": Message.CO2_ALARM,
+    "medical": Message.MEDICAL_ALARM,
 }
 
 
@@ -97,7 +109,7 @@ def alarm_state_command(state: str, delay: int | None) -> dict[str, str]:
         raise ValueError(f"Invalid alarm state command: {state}")
     property_key = MODE_PROPERTY_KEY
     value = MAX_VALUE
-    if isinstance(message, Delays):
+    if isinstance(message, Delay):
         property_key = 7
         if delay is None:
             value = DEFAULT_DELAY
@@ -127,12 +139,16 @@ def alarm_command(alarm: str) -> dict[str, str]:
 
 def chime_command(chime: str) -> dict[str, str]:
     """Return a zwave command for sending a chime."""
-    if not (property := CHIME.get(chime)):
+    if not (message := CHIME.get(chime)):
         raise ValueError(f"Invalid chime command: {chime}")
+    if isinstance(message, NotificationSound):
+        property_key = NOTIFICATION_SOUND_PROPERTY_KEY
+    else:
+        property_key = MODE_PROPERTY_KEY
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,
-        "property": int(property),
-        "property_key": NOTIFICATION_SOUND_PROPERTY_KEY,
+        "property": int(message),
+        "property_key": property_key,
         "value": MAX_VALUE,
     }

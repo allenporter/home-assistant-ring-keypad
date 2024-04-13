@@ -149,6 +149,8 @@ async def test_set_alarm_state_services(
     [
         ("wind_chime", 98, 9, 100),
         ("bing_bong", 99, 9, 100),
+        ("invalid_code", 9, 1, 100),
+        ("need_bypass", 16, 1, 100),
     ],
 )
 async def test_chime_service(

@@ -1,11 +1,16 @@
 # home-assistant-ring-keypad
 
-A Home Assistant custom component for the ZWave Ring Keypad.
+A Home Assistant custom component for the Z-Wave Ring Keypad.
 
 This implements a helper that makes the Ring Keypad Z-Wave device appear
 with a couple more user friendly components that a raw Z-Wave device. The Ring
 Keypad device does not expose the current state over Z-Wave and therefore it
 must always be used as a follower, where the state is another system.
+
+This is based on the work of [@ImSorryButWho](https://github.com/ImSorryButWho)
+who documented the keypad and [blueprint](https://community.home-assistant.io/t/synchronize-ring-alarm-keypad-v2-with-alarmo/349461). However, this is an alternative
+implementation that works with well behaving alarm integrations have proper
+error handling and are well tested (not Alarmo).
 
 ## Event Entity
 
@@ -86,7 +91,7 @@ The Alarm service will sound an alarm from the Ring Keypad.
 | `co2`     | Carbon monoxide alarm. Plays intermittent beeping alarm, flashes light until another mode is selected. |
 | `medical` | Medical alarm. Medical button lights, bar flashes. No alarm sound plays.                               |
 
-### Chime
+### Notification
 
 The Chime service will send a message to the Ring Keypad to play the
 specified chime sound.
@@ -99,10 +104,12 @@ specified chime sound.
     chime: double_beep
 ```
 
-| `chime`       | Description            |
-| ------------- | ---------------------- |
-| `double_beep` | Electronic double beep |
-| `guitar_riff` | Guitar riff            |
-| `wind_chime`  | Wind chimes            |
-| `bing_bong`   | Echoey Bing Bong       |
-| `doorbell`    | Ring doorbell chime    |
+| `chime`        | Description                                                |
+| -------------- | ---------------------------------------------------------- |
+| `invalid_code` | Code not accepted. A soft error tone plays.                |
+| `need_bypass`  | Keypad says "Sensors require bypass." Enter button blinks. |
+| `double_beep`  | Electronic double beep                                     |
+| `guitar_riff`  | Guitar riff                                                |
+| `wind_chime`   | Wind chimes                                                |
+| `bing_bong`    | Echoey Bing Bong                                           |
+| `doorbell`     | Ring doorbell chime                                        |

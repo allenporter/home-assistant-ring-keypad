@@ -2,6 +2,7 @@ update_alarm_state:
   target:
     device:
       integration: zwave_js
+      manufacturer: Ring
   fields:
     alarm_state:
       required: true
@@ -20,6 +21,7 @@ chime:
   target:
     device:
       integration: zwave_js
+      manufacturer: Ring
   fields:
     chime:
       required: true
@@ -37,6 +39,7 @@ alarm:
   target:
     device:
       integration: zwave_js
+      manufacturer: Ring
   fields:
     alarm:
       required: true
@@ -45,6 +48,8 @@ alarm:
         select:
           translation_key: "alarm"
           options:
+            - "invalid_code"
+            - "need_bypass"
             - "generic"
             - "burglar"
             - "smoke"
