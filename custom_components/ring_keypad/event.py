@@ -28,6 +28,7 @@ ENTITY_EVENT_TYPES = {
 }
 ENTITY_EVENT_TYPE_VALUES = list(set(ENTITY_EVENT_TYPES.values()))
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -52,7 +53,7 @@ class RingKeypadEventEntity(EventEntity):
     """Event entity for the Ring Keypad Z-Wave notification events."""
 
     _attr_has_entity_name = True
-    _attr_device_class = EventDeviceClass.
+    _attr_device_class = EventDeviceClass.BUTTON
     _attr_event_types = ENTITY_EVENT_TYPE_VALUES
     _attr_should_poll = False
     _attr_translation_key = "keypad_event"
