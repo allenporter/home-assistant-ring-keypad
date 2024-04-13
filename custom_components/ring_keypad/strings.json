@@ -1,0 +1,34 @@
+{
+  "services": {
+    "update_alarm_state": {
+      "name": "Update alarm state",
+      "description": "Set the alarm state on the Ring Keypad.",
+      "fields": {
+        "alarm_state": {
+          "name": "Alarm State",
+          "description": "The Home Assistant Alarm Control Panel Entity state."
+        }
+      }
+    },
+    "chime": {
+      "name": "Notify Chime",
+      "description": "Send a Chime notification to the Ring Keypad.",
+      "fields": {
+        "chime": {
+          "name": "Chime",
+          "description": "The chime to send to the Ring Keypad."
+        }
+      }
+    },
+    "alarm": {
+      "name": "Notify Alarm",
+      "description": "Send an Alarm notification to the Ring Keypad.",
+      "fields": {
+        "chime": {
+          "name": "Alarm",
+          "description": "The alarm to send to the Ring Keypad."
+        }
+      }
+    }
+  }
+}
