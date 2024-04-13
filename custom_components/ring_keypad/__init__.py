@@ -58,9 +58,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 _LOGGER.debug("Reloading Ring Keypad configuration entry")
                 await hass.config_entries.async_reload(entry.entry_id)
 
-    async def _zwave_set_value(
-        device_id: str, service_data: dict[str, str], context: Context
-    ) -> None:
+
+    async def _zwave_set_value(device_id: str, service_data: dict[str, str], context: Context) -> None:
         await hass.services.async_call(
             ZWAVE_DOMAIN,
             CONST_ZWAVE_SET_VALUE,
@@ -70,6 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             target={"device_id": device_id},
         )
 
+
     async def _async_update_alarm_state_service(call: ServiceCall) -> None:
         """Update the Ring Keypad to reflect the alarm state."""
         await _zwave_set_value(
@@ -77,6 +77,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             service_data=alarm_state_command(call.data[CONF_ALARM_STATE]),
             context=call.context,
         )
+
 
     async def _async_chime_service(call: ServiceCall) -> None:
         """Send a chime to the Ring Keypad."""
@@ -86,6 +87,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             context=call.context,
         )
 
+
     async def _async_alarm_service(call: ServiceCall) -> None:
         """Send an alarm to the Ring Keypad."""
         await _zwave_set_value(
@@ -94,40 +96,35 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             context=call.context,
         )
 
+
     if DOMAIN not in hass.data:
         _LOGGER.debug("Registering Ring Keypad services")
         hass.services.async_register(
             DOMAIN,
             UPDATE_ALARM_STATE_SERVICE,
             _async_update_alarm_state_service,
-            schema=vol.Schema(
-                {
-                    vol.Required(CONF_DEVICE_ID): cv.string,
-                    vol.Required(CONF_ALARM_STATE): cv.string,
-                }
-            ),
+            schema=vol.Schema({
+                vol.Required(CONF_DEVICE_ID): cv.string,
+                vol.Required(CONF_ALARM_STATE): cv.string,
+            })
         )
         hass.services.async_register(
             DOMAIN,
             CHIME_SERVICE,
             _async_chime_service,
-            schema=vol.Schema(
-                {
-                    vol.Required(CONF_DEVICE_ID): cv.string,
-                    vol.Required(CONF_CHIME): cv.string,
-                }
-            ),
+            schema=vol.Schema({
+                vol.Required(CONF_DEVICE_ID): cv.string,
+                vol.Required(CONF_CHIME): cv.string,
+            })
         )
         hass.services.async_register(
             DOMAIN,
             ALARM_SERVICE,
             _async_alarm_service,
-            schema=vol.Schema(
-                {
-                    vol.Required(CONF_DEVICE_ID): cv.string,
-                    vol.Required(CONF_ALARM): cv.string,
-                }
-            ),
+            schema=vol.Schema({
+                vol.Required(CONF_DEVICE_ID): cv.string,
+                vol.Required(CONF_ALARM): cv.string,
+            })
         )
         hass.data[DOMAIN] = {}
 
