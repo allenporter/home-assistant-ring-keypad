@@ -3,19 +3,22 @@
 A Home Assistant custom component for the ZWave Ring Keypad.
 
 This implements a helper that makes the Ring Keypad Z-Wave device appear
-with a couple more user friendly components that a raw Z-Wave device.
+with a couple more user friendly components that a raw Z-Wave device. The Ring
+Keypad device does not expose the current state over Z-Wave and therefore it
+must always be used as a follower, where the state is another system.
 
 ## Event Entity
 
-Ring Keypad key-presses are [published as events](https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md) on the event. This component adds a [Event entity](https://www.home-assistant.io/integrations/event/)
-that can be used to simplify automations rather than relying on
-lower level event codes.
+Ring Keypad key-presses are typically published as Z-Wave [events](https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md). This component adds a [Event entity](https://www.home-assistant.io/integrations/event/)
+to make these more user friendly in the UI and automations. The idea here is to
+translate the more complex events into simpler events that can be bound to
+an [Alarm Control Panel](https://www.home-assistant.io/integrations/alarm_control_panel/)
+entity services.
 
-The idea here is to translate the more complex events into simpler events
-that can be bound to alarm control panel services.
-
-Below are the attributes for the event entity and how they relate to the buttons
-on the keypad.
+The Event entity has an event type either associated with a specific Home Assistant
+alarm state, or a generic button press. There is additional detail about which
+button was pressed in the `button` attributes or details about the alarm code
+entered when disarming in the `code` attributes.
 
 | `event_type`     | Additional attributes                                         | Meaning                                                                             |
 | ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -31,9 +34,19 @@ on the keypad.
 
 ## Services
 
+This component also exposes additional services that can be used to update the
+current state of the Ring Keypad. The Keypad does not expose its current state
+to Home Assistant, however, so it
+
 ### Update Alarm State
 
-Sets the state of the alarm control panel.
+Sets the state of the Ring Keypad from the current state of an [Alarm Control Panel](https://www.home-assistant.io/integrations/alarm_control_panel/).
+
+The service allows specifying a delay for the `arming` and `pending` states
+which are used for the countdown announcements. Any delay is just for the
+anonuncement, and must be kept in sync with the actual alarm control panel
+behavior. Keypad itself will not transition to an amrmed or triggered state
+itself.
 
 ```
 - service: ring_keypad.update_alarm_state
@@ -41,16 +54,17 @@ Sets the state of the alarm control panel.
     device_id: < device id >
   data:
     alarm_state: armed_away
+    delay: 60  # For `arming` and `pending`
 ```
 
-| `alarm_state` | Description                                                                                                                                                                              |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `disarmed`    | Disarmed. Keypad says "Disarmed," disarmed light lights up on motion.                                                                                                                    |
-| `armed_home`  | Armed Home. Keypad says "Home and armed," armed stay light lights up on motion.                                                                                                          |
-| `armed_away`  | Armed Away. Keypad says "Away and armed," armed away light lights up on motion.                                                                                                          |
-| `arming`      | Exit delay, about to arm. Keypad says "Exit delay started." Plays sound, speeding up near end of specified duration. Bar shows countup. The delay is currently hard coded to 45 seconds. |
-| `pending`     | Pending, about to trigger. Keypad says "Entry delay started." Plays sound, speeding up near end of specified duration. The delay is currently hard coded to 30 seconds.                  |
-| `triggered`   | Trigger the alarm. This is equivalent to calling the Alarm service with `burglar`.                                                                                                       |
+| `alarm_state` | Description                                                                                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `disarmed`    | Disarmed. Keypad says "Disarmed," disarmed light lights up on motion.                                                                                                        |
+| `armed_home`  | Armed Home. Keypad says "Home and armed," armed stay light lights up on motion.                                                                                              |
+| `armed_away`  | Armed Away. Keypad says "Away and armed," armed away light lights up on motion.                                                                                              |
+| `arming`      | Exit delay, about to arm. Keypad says "Exit delay started." Plays sound, speeding up near end of specified duration. Bar shows countup. The `delay` sets the delay duration. |
+| `pending`     | Pending, about to trigger. Keypad says "Entry delay started." Plays sound, speeding up near end of specified duration. The `delay` sets the delay duration.                  |
+| `triggered`   | Trigger the alarm. This is equivalent to calling the Alarm service with `burglar`.                                                                                           |
 
 ### Alarm
 

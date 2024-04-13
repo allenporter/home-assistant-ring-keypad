@@ -15,6 +15,8 @@ from homeassistant.const import (
     STATE_ALARM_TRIGGERED,
 )
 
+from .const import DEFAULT_DELAY
+
 
 EVENT_COMMAND_CLASS = "111"
 COMMAND_CLASS = "135"
@@ -62,9 +64,6 @@ class Delays(enum.IntEnum):
     EXIT_DELAY = 18
 
 
-EXIT_DELAY_SECONDS = 45
-ENTRY_DELAY_SECONDS = 30
-
 # Mapping of Home Assistant entity state to keypad messages
 ALARM_STATE = {
     STATE_ALARM_ARMED_AWAY: Messages.ARMED_AWAY,
@@ -92,7 +91,7 @@ ALARM = {
 }
 
 
-def alarm_state_command(state: str) -> dict[str, str]:
+def alarm_state_command(state: str, delay: int | None) -> dict[str, str]:
     """Return a zwave command for updating the alarm state."""
     if not (message := ALARM_STATE.get(state)):
         raise ValueError(f"Invalid alarm state command: {state}")
@@ -100,10 +99,10 @@ def alarm_state_command(state: str) -> dict[str, str]:
     value = MAX_VALUE
     if isinstance(message, Delays):
         property_key = 7
-        if message == Delays.EXIT_DELAY:
-            value = EXIT_DELAY_SECONDS
+        if delay is None:
+            value = DEFAULT_DELAY
         else:
-            value = ENTRY_DELAY_SECONDS
+            value = delay
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,
