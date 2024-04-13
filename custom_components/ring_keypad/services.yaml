@@ -1,6 +1,6 @@
 update_alarm_state:
   target:
-    entity:
+    device:
       domain: zwave_js
   fields:
     alarm_state:
@@ -18,7 +18,7 @@ update_alarm_state:
             - "triggered"
 chime:
   target:
-    entity:
+    device:
       domain: zwave_js
   fields:
     chime:
@@ -35,7 +35,7 @@ chime:
             - "doorbell"
 alarm:
   target:
-    entity:
+    device:
       domain: zwave_js
   fields:
     alarm:
