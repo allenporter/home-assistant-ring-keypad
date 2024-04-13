@@ -1,7 +1,7 @@
 update_alarm_state:
   target:
     device:
-      domain: zwave_js
+      integration: zwave_js
   fields:
     alarm_state:
       required: true
@@ -19,7 +19,7 @@ update_alarm_state:
 chime:
   target:
     device:
-      domain: zwave_js
+      integration: zwave_js
   fields:
     chime:
       required: true
@@ -36,7 +36,7 @@ chime:
 alarm:
   target:
     device:
-      domain: zwave_js
+      integration: zwave_js
   fields:
     alarm:
       required: true
