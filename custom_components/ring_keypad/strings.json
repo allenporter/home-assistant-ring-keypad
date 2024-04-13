@@ -1,4 +1,35 @@
 {
+  "title": "Ring Keypad",
+  "selector": {
+    "alarm_state": {
+      "options": {
+        "armed_away": "Armed Away",
+        "armed_home": "Armed Home",
+        "arming": "Arming",
+        "disarmed": "Disarmed",
+        "pending": "pending",
+        "triggered": "Triggered"
+      }
+    },
+    "chime": {
+      "options": {
+        "double_beep": "Double Beep",
+        "guitar_riff": "Guitar Riff",
+        "wind_chime": "Wind Chime",
+        "bing_bong": "Bing Bong",
+        "doorbell": "Doorbell"
+      }
+    },
+    "alarm": {
+      "options": {
+        "generic": "Generic",
+        "burglar": "Burglar",
+        "smoke": "Smoke",
+        "co2": "CO2",
+        "medical": "Medical"
+      }
+    }
+  },
   "services": {
     "update_alarm_state": {
       "name": "Update alarm state",
