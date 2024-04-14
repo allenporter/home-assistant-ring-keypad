@@ -39,8 +39,20 @@ def caplog_fixture(caplog: pytest.LogCaptureFixture) -> pytest.LogCaptureFixture
     return caplog
 
 
+@pytest.fixture(name="arming_time")
+async def mock_arming_time() -> int:
+    """Fixture to provide arming time."""
+    return 0
+
+
+@pytest.fixture(name="delay_time")
+async def mock_delay_time() -> int:
+    """Fixture to provide delay time."""
+    return 0
+
+
 @pytest.fixture(name="alarm_control_panel")
-async def mock_alarm_control_panel(hass: HomeAssistant) -> MockConfigEntry:
+async def mock_alarm_control_panel(hass: HomeAssistant, arming_time: int, delay_time: int) -> MockConfigEntry:
     assert await async_setup_component(
         hass,
         "alarm_control_panel",
@@ -52,8 +64,8 @@ async def mock_alarm_control_panel(hass: HomeAssistant) -> MockConfigEntry:
                     "code": CODE,
                     "code_arm_required": False,
                     # Simplify testing
-                    "arming_time": 0,
-                    "delay_time": 0,
+                    "arming_time": arming_time,
+                    "delay_time": delay_time,
                 }
             ]
         },
@@ -204,11 +216,13 @@ async def test_keypad_input(
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 @pytest.mark.parametrize("automation_yaml", [KEYPAD_ALARM_AUTOMATION_YAML])
 @pytest.mark.parametrize(
-    ("alarm_service", "service_data", "expected_property"),
+    ("alarm_service", "service_data", "arming_time", "delay_time", "expected_state", "expected_zwave_value"),
     [
-        ("alarm_arm_home", {}, 10),
-        ("alarm_arm_away", {}, 11),
-        ("alarm_trigger", {}, 13),
+        ("alarm_arm_home", {}, 0, 0, "armed_home", {"property": 10, "property_key": 1, "value": 100}),
+        ("alarm_arm_away", {}, 0, 0,"armed_away", {"property": 11, "property_key": 1, "value": 100}),
+        ("alarm_trigger", {}, 0, 0, "triggered", {"property": 13, "property_key": 1, "value": 100}),
+        ("alarm_trigger", {}, 0, 60, "pending",  {"property": 17, "property_key": 7, "value": 45}),
+        ("alarm_arm_away", {}, 60, 0, "arming",  {"property": 18, "property_key": 7, "value": 50}),
     ],
 )
 async def test_keypad_mode(
@@ -219,7 +233,8 @@ async def test_keypad_mode(
     zwave_device_id: str,
     alarm_service: str,
     service_data: dict[str, Any],
-    expected_property: str,
+    expected_state: str,
+    expected_zwave_value: str,
 ) -> None:
     """Test alarm control panel states are passed on to the keypad."""
     # Verify automation is loaded
@@ -230,7 +245,7 @@ async def test_keypad_mode(
     set_value = async_mock_service(hass, "zwave_js", "set_value")
     assert not set_value
 
-    # Set the alarm to armed and verify the keypad is notified
+    # Set the alarm and verify the keypad is notified
     await hass.services.async_call(
         "alarm_control_panel",
         alarm_service,
@@ -240,15 +255,85 @@ async def test_keypad_mode(
     )
     await hass.async_block_till_done()
     await hass.async_block_till_done()
-    assert len(set_value) == 1
+    await hass.async_block_till_done()
 
-    # Verify the alarm was armed
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
+    assert state
+    assert state.state == expected_state
+
+    # Verify the command was sent
     assert len(set_value) == 1
     assert set_value[0].data == {
         "command_class": "135",
         "device_id": [zwave_device_id],
         "endpoint": 0,
-        "property": expected_property,
+        **expected_zwave_value,
+    }
+
+    error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
+    assert len(error_logs) == 0
+
+
+
+@pytest.mark.parametrize("expected_lingering_timers", [True])
+@pytest.mark.parametrize("automation_yaml", [KEYPAD_ALARM_AUTOMATION_YAML])
+async def test_disarm(
+    hass: HomeAssistant,
+    config_entry: MockConfigEntry,
+    automation: Any,
+    caplog: pytest.LogCaptureFixture,
+    zwave_device_id: str,
+) -> None:
+    """Test alarm control panel states are passed on to the keypad."""
+    # Verify automation is loaded
+    state = hass.states.get(KEYPAD_ALARM_AUTOMATION_ENTITY)
+    assert state
+    assert state.state == "on"
+
+    set_value = async_mock_service(hass, "zwave_js", "set_value")
+    assert not set_value
+
+    # Arm the alarm
+    await hass.services.async_call(
+        "alarm_control_panel",
+        "alarm_arm_away",
+        service_data={},
+        target={"entity_id": ALARM_CONTROL_PANEL_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
+    assert state
+    assert state.state == "armed_away"
+
+    set_value.clear()
+
+    # Disarm the alarm
+    await hass.services.async_call(
+        "alarm_control_panel",
+        "alarm_disarm",
+        service_data={"code": CODE},
+        target={"entity_id": ALARM_CONTROL_PANEL_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+    await hass.async_block_till_done()
+
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
+    assert state
+    assert state.state == "disarmed"
+
+    # Verify the keypad is notified
+    assert len(set_value) == 1
+    assert set_value[0].data == {
+        "command_class": "135",
+        "device_id": [zwave_device_id],
+        "endpoint": 0,
+        "property": 2,
         "property_key": 1,
         "value": 100,
     }

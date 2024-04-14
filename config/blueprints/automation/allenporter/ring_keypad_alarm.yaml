@@ -71,7 +71,7 @@ action:
             alarm_state: "{{ trigger.to_state.state }}"
             delay: >-
               {% if trigger.to_state.state == "arming" %}
-                {{ amring_delay }}
+                {{ arming_delay }}
               {% elif trigger.to_state.state == "pending" %}
                 {{ pending_delay }}
               {% else %}
