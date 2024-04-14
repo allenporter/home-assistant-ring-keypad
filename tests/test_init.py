@@ -131,12 +131,12 @@ async def test_set_alarm_state_services(
             "delay": delay,
         },
         blocking=True,
-        target={"device_id": zwave_device_id},
+        target={"device_id": [zwave_device_id]},
     )
     assert call_service
     assert call_service[0].data == {
         "command_class": "135",
-        "device_id": zwave_device_id,
+        "device_id": [zwave_device_id],
         "endpoint": 0,
         "property": property,
         "property_key": property_key,
@@ -177,12 +177,12 @@ async def test_chime_service(
             "chime": chime,
         },
         blocking=True,
-        target={"device_id": zwave_device_id},
+        target={"device_id": [zwave_device_id]},
     )
     assert call_service
     assert call_service[0].data == {
         "command_class": "135",
-        "device_id": zwave_device_id,
+        "device_id": [zwave_device_id],
         "endpoint": 0,
         "property": property,
         "property_key": property_key,
@@ -221,12 +221,12 @@ async def test_alarm_service(
             "alarm": alarm,
         },
         blocking=True,
-        target={"device_id": zwave_device_id},
+        target={"device_id": [zwave_device_id]},
     )
     assert call_service
     assert call_service[0].data == {
         "command_class": "135",
-        "device_id": zwave_device_id,
+        "device_id": [zwave_device_id],
         "endpoint": 0,
         "property": property,
         "property_key": property_key,

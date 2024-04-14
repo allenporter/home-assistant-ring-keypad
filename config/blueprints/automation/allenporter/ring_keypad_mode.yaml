@@ -15,7 +15,7 @@ blueprint:
         alarm control panel.
       selector:
         device:
-          domain: zwave_js
+          integration: zwave_js
           manufacturer: Ring
     alarm_entity:
       name: Alarm Control Panel entity
@@ -27,11 +27,15 @@ mode: queued # Don't overload keypad, process updates serially
 trace:
   stored_traces: 10
 trigger:
-  - platform: state
+  - alias: Alarm Control Panel State Listener
+    platform: state
     entity_id: !input alarm_entity
 action:
-  - service: "ring_keypad.update_alarm_state"
+  - alias: Update Ring Keypad Alarm State
+    service: "ring_keypad.update_alarm_state"
     data:
       alarm_state: "{{ trigger.to_state.state }}"
     target:
       device_id: !input keypad_device
+  # XXX Entry Delay
+  # XXX Exit Delay
