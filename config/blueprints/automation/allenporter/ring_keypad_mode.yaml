@@ -1,6 +1,6 @@
 ---
 blueprint:
-  name: Update the Ring Keypad mode to reflect the state of an Alarm Control Panel
+  name: Update Ring Keypad from Alarm
   description: |
     Automations to follow state changes of an Alarm Control Panel entity and
     update the mode of the Ring Keypad.
