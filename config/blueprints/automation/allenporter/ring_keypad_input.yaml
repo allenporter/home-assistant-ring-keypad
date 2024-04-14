@@ -20,7 +20,7 @@ blueprint:
       selector:
         entity:
           domain: alarm_control_panel
-mode: queued # Don't overload keypad
+mode: queued # Process commands serially
 trace:
   stored_traces: 10
 trigger:

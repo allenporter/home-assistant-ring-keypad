@@ -1,0 +1,9 @@
+---
+- id: "1687836340268"
+  alias: Ring Keypad Mode
+  description: "Update the Ring Keypad mode based on Alarm Control Panel state"
+  use_blueprint:
+    path: allenporter/ring_keypad_input.yaml
+    input:
+      keypad_device: DEVICE_ID
+      alarm_entity: alarm_control_panel.security

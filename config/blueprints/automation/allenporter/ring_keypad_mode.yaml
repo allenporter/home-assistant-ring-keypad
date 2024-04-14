@@ -1,0 +1,37 @@
+---
+blueprint:
+  name: Update the Ring Keypad mode to reflect the state of an Alarm Control Panel
+  description: |
+    Automations to follow state changes of an Alarm Control Panel entity and
+    update the mode of the Ring Keypad.
+
+    See https://github.com/allenporter/home-assistant-ring-keypad/
+  domain: automation
+  input:
+    keypad_device:
+      name: Ring Keypad Device
+      description: |
+        The Ring Keypad device that will be updated with state changes from the
+        alarm control panel.
+      selector:
+        device:
+          domain: zwave_js
+          manufacturer: Ring
+    alarm_entity:
+      name: Alarm Control Panel entity
+      description: The Alarm Control Panel to follow for state changes to push to the keypad.
+      selector:
+        entity:
+          domain: alarm_control_panel
+mode: queued # Don't overload keypad, process updates serially
+trace:
+  stored_traces: 10
+trigger:
+  - platform: state
+    entity_id: !input alarm_entity
+action:
+  - service: "ring_keypad.update_alarm_state"
+    data:
+      alarm_state: "{{ trigger.to_state.state }}"
+    target:
+      device_id: !input keypad_device

@@ -1,0 +1,9 @@
+---
+- id: "1687836340268"
+  alias: Ring Keypad Input
+  description: "Push input from the Ring Keypad Input to an Alarm Control Panel"
+  use_blueprint:
+    path: allenporter/ring_keypad_input.yaml
+    input:
+      keypad_entity: event.device_name_button
+      alarm_entity: alarm_control_panel.security

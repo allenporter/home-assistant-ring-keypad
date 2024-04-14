@@ -1,9 +1,0 @@
----
-- id: "1687836340268"
-  alias: Keypad Control Panel
-  description: ""
-  use_blueprint:
-    path: allenporter/alarm_control_panel.yaml
-    input:
-      keypad_entity: event.device_name_button
-      alarm_entity: alarm_control_panel.security

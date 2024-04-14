@@ -22,7 +22,9 @@ from pytest_homeassistant_custom_component.common import (
 _LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = pathlib.Path(__file__).parent.parent / "config" / "blueprints"
-AUTOMATION_YAML = pathlib.Path("config/automations/keypad_control_panel.yaml")
+AUTOMATION_YAML = pathlib.Path("config/automations/keypad_input.yaml")
+AUTOMATION_ENTITY = "automation.ring_keypad_input"
+ALARM_CONTROL_PANEL_ENTITY = "alarm_control_panel.security"
 
 
 @pytest.fixture(name="error_caplog")
@@ -80,7 +82,7 @@ def events(hass: HomeAssistant) -> list[Event[Mapping[str, Any]]]:
 
 
 @pytest.mark.parametrize(("expected_lingering_timers"), [True])
-async def test_arm_button(
+async def test_keypad_input(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     automation: Any,
@@ -93,12 +95,12 @@ async def test_arm_button(
     context = Context()
 
     # Verify automation is loaded
-    state = hass.states.get("automation.keypad_control_panel")
+    state = hass.states.get(AUTOMATION_ENTITY)
     assert state
     assert state.state == "on"
 
     # Verify the starting control panel state
-    state = hass.states.get("alarm_control_panel.security")
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "disarmed"
 
@@ -118,7 +120,7 @@ async def test_arm_button(
     await hass.async_block_till_done()
 
     # Verify the alarm is armed
-    state = hass.states.get("alarm_control_panel.security")
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "armed_away"
 
@@ -137,7 +139,7 @@ async def test_arm_button(
     await hass.async_block_till_done()
     await hass.async_block_till_done()
 
-    state = hass.states.get("alarm_control_panel.security")
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "armed_away"
 
@@ -161,7 +163,7 @@ async def test_arm_button(
     await hass.async_block_till_done()
     await hass.async_block_till_done()
 
-    state = hass.states.get("alarm_control_panel.security")
+    state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "disarmed"
 
