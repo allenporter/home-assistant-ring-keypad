@@ -22,12 +22,15 @@ from pytest_homeassistant_custom_component.common import (
 _LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = pathlib.Path(__file__).parent.parent / "config" / "blueprints"
+KEYPAD_ALARM_AUTOMATION_YAML = pathlib.Path("config/automations/keypad_alarm.yaml")
 KEYPAD_INPUT_AUTOMATION_YAML = pathlib.Path("config/automations/keypad_input.yaml")
 KEYPAD_MODE_AUTOMATION_YAML = pathlib.Path("config/automations/keypad_mode.yaml")
+KEYPAD_ALARM_AUTOMATION_ENTITY = "automation.ring_keypad_alarm"
 KEYPAD_INPUT_AUTOMATION_ENTITY = "automation.ring_keypad_input"
 KEYPAD_MODE_AUTOMATION_ENTITY = "automation.ring_keypad_mode"
 ALARM_CONTROL_PANEL_ENTITY = "alarm_control_panel.security"
 CODE = "4444"
+
 
 @pytest.fixture(name="error_caplog")
 def caplog_fixture(caplog: pytest.LogCaptureFixture) -> pytest.LogCaptureFixture:
@@ -88,7 +91,7 @@ def events(hass: HomeAssistant) -> list[Event[Mapping[str, Any]]]:
 
 @pytest.mark.parametrize(
     ("expected_lingering_timers", "automation_yaml"),
-    [(True, KEYPAD_INPUT_AUTOMATION_YAML)],
+    [(True, KEYPAD_ALARM_AUTOMATION_YAML)],
 )
 async def test_keypad_input(
     hass: HomeAssistant,
@@ -98,8 +101,11 @@ async def test_keypad_input(
     zwave_device_id: str,
 ) -> None:
     """Test that the keypad button events."""
+
+    assert await async_setup_component(hass, "system_log", {})
+
     # Verify automation is loaded
-    state = hass.states.get(KEYPAD_INPUT_AUTOMATION_ENTITY)
+    state = hass.states.get(KEYPAD_ALARM_AUTOMATION_ENTITY)
     assert state
     assert state.state == "on"
 
@@ -107,6 +113,13 @@ async def test_keypad_input(
     state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "disarmed"
+
+    # Device not notified
+    set_value = async_mock_service(hass, "zwave_js", "set_value")
+    assert not set_value
+
+    error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
+    assert not error_logs
 
     # Press a button on the control panel and it should update the alarm panel
     # entity. Test end to end with a Z-wave event.
@@ -121,11 +134,19 @@ async def test_keypad_input(
     )
     await hass.async_block_till_done()
     await hass.async_block_till_done()
+    await hass.async_block_till_done()  # Update device
 
     # Verify the alarm is armed
     state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "armed_away"
+
+    error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
+    assert not error_logs
+
+    # Device notified to update its state
+    assert len(set_value) == 1
+    set_value.clear()
 
     # Disarm the alarm, but with an invalid code..
     hass.bus.async_fire(
@@ -140,15 +161,19 @@ async def test_keypad_input(
     )
     await hass.async_block_till_done()
     await hass.async_block_till_done()
+    await hass.async_block_till_done()
 
     state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
     assert state.state == "armed_away"
 
     error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
-    assert len(error_logs) == 1
+    assert len(error_logs) == 3
     assert "Invalid alarm code" in error_logs[0].message
     caplog.clear()
+
+    # Verify device was not notified
+    assert not set_value
 
     # Enter the code correctly
     hass.bus.async_fire(
@@ -163,6 +188,10 @@ async def test_keypad_input(
     )
     await hass.async_block_till_done()
     await hass.async_block_till_done()
+    await hass.async_block_till_done()  # Update device
+
+    # Device notified to update its state
+    assert len(set_value) == 1
 
     state = hass.states.get(ALARM_CONTROL_PANEL_ENTITY)
     assert state
@@ -173,7 +202,7 @@ async def test_keypad_input(
 
 
 @pytest.mark.parametrize("expected_lingering_timers", [True])
-@pytest.mark.parametrize("automation_yaml", [KEYPAD_MODE_AUTOMATION_YAML])
+@pytest.mark.parametrize("automation_yaml", [KEYPAD_ALARM_AUTOMATION_YAML])
 @pytest.mark.parametrize(
     ("alarm_service", "service_data", "expected_property"),
     [
@@ -194,7 +223,7 @@ async def test_keypad_mode(
 ) -> None:
     """Test alarm control panel states are passed on to the keypad."""
     # Verify automation is loaded
-    state = hass.states.get(KEYPAD_MODE_AUTOMATION_ENTITY)
+    state = hass.states.get(KEYPAD_ALARM_AUTOMATION_ENTITY)
     assert state
     assert state.state == "on"
 
@@ -207,7 +236,7 @@ async def test_keypad_mode(
         alarm_service,
         service_data=service_data,
         target={"entity_id": ALARM_CONTROL_PANEL_ENTITY},
-        blocking=True
+        blocking=True,
     )
     await hass.async_block_till_done()
     await hass.async_block_till_done()
@@ -217,7 +246,7 @@ async def test_keypad_mode(
     assert len(set_value) == 1
     assert set_value[0].data == {
         "command_class": "135",
-        "device_id": [ zwave_device_id ],
+        "device_id": [zwave_device_id],
         "endpoint": 0,
         "property": expected_property,
         "property_key": 1,

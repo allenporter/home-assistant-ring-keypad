@@ -1,0 +1,99 @@
+---
+blueprint:
+  name: Ring Keypad Alarm Control Panel
+  description: >-
+    Automations that will connect the Ring Keypad to an Alarm Control Panel.
+
+    There are two automations: One to send button presses from the keypad to
+    the control panel, and one to update the keypad with the alarm state.
+
+    See https://github.com/allenporter/home-assistant-ring-keypad/
+  domain: automation
+  input:
+    keypad_entity:
+      name: Ring Keypad Entity
+      description: The Ring Keypad event entity
+      selector:
+        entity:
+          domain: event
+          integration: ring_keypad
+    alarm_entity:
+      name: Alarm Control Panel entity
+      description: The Alarm Control Panel to follow for state changes to push to the keypad.
+      selector:
+        entity:
+          domain: alarm_control_panel
+    arming_delay:
+      name: Keypad Exit Delay
+      description: >-
+        The Keypad will say "Exit delay started" and count down this amount of time.  This
+        needs to match the actual amount of time the Alarm Control Panel is configured
+        to delay.
+      selector:
+        number:
+          min: 0
+          max: 120
+    pending_delay:
+      name: Keypad Entry Delay
+      description: >-
+        The Keypad will say "Entry delay started" and count down this amount of time.  This
+        needs to match the actual amount of time the Alarm Control Panel is configured
+        to delay.
+      selector:
+        number:
+          min: 0
+          max: 120
+mode: queued # Don't overload keypad, process updates serially
+trace:
+  stored_traces: 10
+variables:
+  keypad_entity: !input keypad_entity
+  arming_delay: !input arming_delay
+  pending_delay: !input pending_delay
+trigger:
+  - alias: Alarm Control Panel Trigger
+    platform: state
+    entity_id: !input alarm_entity
+    id: alarm_update
+  - alias: Ring Keypad Trigger
+    platform: state
+    entity_id: !input keypad_entity
+    id: keypad_update
+action:
+  choose:
+    - conditions:
+        - condition: trigger
+          id: alarm_update
+      sequence:
+        - alias: Update Ring Keypad Alarm State
+          service: "ring_keypad.update_alarm_state"
+          data:
+            alarm_state: "{{ trigger.to_state.state }}"
+            delay: >-
+              {% if trigger.to_state.state == "arming" %}
+                {{ amring_delay }}
+              {% elif trigger.to_state.state == "pending" %}
+                {{ pending_delay }}
+              {% else %}
+                0
+              {% endif %}
+          target:
+            device_id: "{{ device_id(keypad_entity )}}"
+    - conditions:
+        - condition: trigger
+          id: keypad_update
+        - condition: state
+          entity_id: !input keypad_entity
+          attribute: event_type
+          state:
+            - alarm_disarm
+            - alarm_arm_away
+            - alarm_arm_home
+      sequence:
+        - service: "alarm_control_panel.{{ trigger.to_state.attributes.event_type }}"
+          data:
+            entity_id: !input alarm_entity
+            code: >-
+              {% if trigger.to_state.attributes.code != none %}
+                {{ trigger.to_state.attributes.code }}
+              {% endif %}
