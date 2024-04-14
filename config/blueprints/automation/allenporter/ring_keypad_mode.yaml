@@ -1,7 +1,7 @@
 ---
 blueprint:
   name: Update Ring Keypad from Alarm
-  description: |
+  description: >-
     Automations to follow state changes of an Alarm Control Panel entity and
     update the mode of the Ring Keypad.
 
@@ -10,7 +10,7 @@ blueprint:
   input:
     keypad_device:
       name: Ring Keypad Device
-      description: |
+      description: >-
         The Ring Keypad device that will be updated with state changes from the
         alarm control panel.
       selector:
@@ -25,7 +25,7 @@ blueprint:
           domain: alarm_control_panel
     arm_away_delay:
       name: Keypad Exit Delay
-      description: |
+      description: >-
           The Keypad will say "Exit delay started" and count down this amount of time.  This
           needs to match the actual amount of time the Alarm Control Panel is configured
           to delay.
@@ -35,7 +35,7 @@ blueprint:
           max: 120
     trigger_delay:
       name: Keypad Entry Delay
-      description: |
+      description: >-
           The Keypad will say "Entry delay started" and count down this amount of time.  This
           needs to match the actual amount of time the Alarm Control Panel is configured
           to delay.

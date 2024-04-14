@@ -1,7 +1,7 @@
 ---
 blueprint:
   name: Control Alarm from Ring Keypad
-  description: |
+  description: >-
     Automations to connect the Ring Keypad Event Entity to send commands to
     an Alarm Control Panel.
     See https://github.com/allenporter/home-assistant-ring-keypad/
@@ -38,7 +38,7 @@ action:
   - service: "alarm_control_panel.{{ trigger.to_state.attributes.event_type }}"
     data:
       entity_id: !input alarm_entity
-      code: >
+      code: >-
         {% if trigger.to_state.attributes.code != none %}
           {{ trigger.to_state.attributes.code }}
         {% endif %}
