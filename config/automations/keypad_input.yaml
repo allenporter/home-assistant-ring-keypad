@@ -1,7 +1,7 @@
 ---
-- id: "1687836340268"
+- id: "1713118533"
   alias: Ring Keypad Input
-  description: "Push input from the Ring Keypad Input to an Alarm Control Panel"
+  description: Push input from the Ring Keypad Input to an Alarm Control Panel
   use_blueprint:
     path: allenporter/ring_keypad_input.yaml
     input:
