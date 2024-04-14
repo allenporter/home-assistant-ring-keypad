@@ -36,12 +36,14 @@
         "armed_home": "Armed Home",
         "arming": "Arming",
         "disarmed": "Disarmed",
-        "pending": "pending",
+        "pending": "Pending",
         "triggered": "Triggered"
       }
     },
     "chime": {
       "options": {
+        "invalid_code": "Invalid Code",
+        "need_bypass": "Need Bypass",
         "double_beep": "Double Beep",
         "guitar_riff": "Guitar Riff",
         "wind_chime": "Wind Chime",
