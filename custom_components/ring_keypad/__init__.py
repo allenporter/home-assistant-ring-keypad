@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import asyncio
 
 import voluptuous as vol
 
@@ -12,7 +11,6 @@ from homeassistant.const import Platform, ATTR_DEVICE_ID, CONF_DEVICE_ID
 from homeassistant.core import HomeAssistant, ServiceCall, Context
 from homeassistant.helpers.event import Event, async_track_device_registry_updated_event
 from homeassistant.helpers import device_registry as dr, config_validation as cv
-from homeassistant.helpers.service import async_extract_referenced_entity_ids, SelectedEntities
 
 from .const import DOMAIN
 from .model import alarm_state_command, chime_command, alarm_command
@@ -32,29 +30,35 @@ ZWAVE_SET_VALUE = "set_value"
 
 UPDATE_ALARM_STATE_SERVICE = "update_alarm_state"
 UPDATE_ALARM_STATE_SCHEMA = vol.All(
-    vol.Schema({
-        vol.Required(CONF_ALARM_STATE): cv.string,
-        vol.Optional(CONF_DELAY): vol.Any(cv.positive_int, None),
-        **cv.ENTITY_SERVICE_FIELDS,
-    }),
+    vol.Schema(
+        {
+            vol.Required(CONF_ALARM_STATE): cv.string,
+            vol.Optional(CONF_DELAY): vol.Any(cv.positive_int, None),
+            **cv.ENTITY_SERVICE_FIELDS,
+        }
+    ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
 )
 
 CHIME_SERVICE = "chime"
 CHIME_SCHEMA = vol.All(
-    vol.Schema({
-        vol.Required(CONF_CHIME): cv.string,
-        **cv.ENTITY_SERVICE_FIELDS,
-    }),
+    vol.Schema(
+        {
+            vol.Required(CONF_CHIME): cv.string,
+            **cv.ENTITY_SERVICE_FIELDS,
+        }
+    ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
 )
 
 ALARM_SERVICE = "alarm"
 ALARM_SCHEMA = vol.All(
-    vol.Schema({
-        vol.Required(CONF_ALARM): cv.string,
-        **cv.ENTITY_SERVICE_FIELDS,
-    }),
+    vol.Schema(
+        {
+            vol.Required(CONF_ALARM): cv.string,
+            **cv.ENTITY_SERVICE_FIELDS,
+        }
+    ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
 )
 
