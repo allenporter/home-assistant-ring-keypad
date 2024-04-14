@@ -23,9 +23,32 @@ blueprint:
       selector:
         entity:
           domain: alarm_control_panel
+    arm_away_delay:
+      name: Keypad Exit Delay
+      description: |
+          The Keypad will say "Exit delay started" and count down this amount of time.  This
+          needs to match the actual amount of time the Alarm Control Panel is configured
+          to delay.
+      selector:
+        number:
+          min: 0
+          max: 120
+    trigger_delay:
+      name: Keypad Entry Delay
+      description: |
+          The Keypad will say "Entry delay started" and count down this amount of time.  This
+          needs to match the actual amount of time the Alarm Control Panel is configured
+          to delay.
+      selector:
+        number:
+          min: 0
+          max: 120
 mode: queued # Don't overload keypad, process updates serially
 trace:
   stored_traces: 10
+variables:
+  arm_away_delay: !input arm_away_delay
+  trigger_delay: !input trigger_delay
 trigger:
   - alias: Alarm Control Panel State Listener
     platform: state
@@ -35,7 +58,13 @@ action:
     service: "ring_keypad.update_alarm_state"
     data:
       alarm_state: "{{ trigger.to_state.state }}"
+      delay: >-
+        {% if trigger.to_state.state == "arm_away" %}
+          {{ arm_away_delay }}
+        {% elif trigger.to_state.state == "trigger" %}
+          {{ trigger_delay }}
+        {% else %}
+          0
+        {% endif %}
     target:
       device_id: !input keypad_device
-  # XXX Entry Delay
-  # XXX Exit Delay

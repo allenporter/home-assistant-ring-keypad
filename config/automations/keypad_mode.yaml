@@ -7,3 +7,5 @@
     input:
       keypad_device: DEVICE_ID
       alarm_entity: alarm_control_panel.security
+      arm_away_delay: 50
+      trigger_delay: 45
