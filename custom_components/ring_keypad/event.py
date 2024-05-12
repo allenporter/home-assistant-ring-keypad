@@ -5,7 +5,8 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICE_ID
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, callback, Event
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.components.event import EventDeviceClass, EventEntity
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -38,7 +39,8 @@ async def async_setup_entry(
 
     device_registry = dr.async_get(hass)
     device_entry = device_registry.async_get(config_entry.options[CONF_DEVICE_ID])
-
+    if device_entry is None:
+        raise HomeAssistantError("Unable to load device entry")
     async_add_entities(
         [
             RingKeypadEventEntity(
@@ -67,10 +69,10 @@ class RingKeypadEventEntity(EventEntity):
         )
 
     @callback
-    def _async_handle_event(self, event: dict[str, Any]) -> None:
+    def _async_handle_event(self, event: Event[dict[str, Any]]) -> None:
         """Handle the demo button event."""
-        _LOGGER.debug("Received ZWave notification: data=%s", event.data)
-        event_data = event.data
+        event_data = event["data"]
+        _LOGGER.debug("Received ZWave notification: data=%s", event_data)
         if (
             not (device_id := event_data.get(CONF_DEVICE_ID))
             or device_id != self._device_id

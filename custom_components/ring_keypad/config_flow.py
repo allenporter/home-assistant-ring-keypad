@@ -34,7 +34,7 @@ OPTIONS_FLOW = {
 }
 
 
-class RingKeypadConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):
+class RingKeypadConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):  # type: ignore[call-arg]
     """Handle a config flow for Switch as X."""
 
     config_flow = CONFIG_FLOW
@@ -47,4 +47,5 @@ class RingKeypadConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):
         """Return config entry title."""
         registry = dr.async_get(self.hass)
         device_entry = registry.async_get(options[CONF_DEVICE_ID])
-        return device_entry.name_by_user or device_entry.name
+        assert device_entry
+        return device_entry.name_by_user or device_entry.name or "Unknown"

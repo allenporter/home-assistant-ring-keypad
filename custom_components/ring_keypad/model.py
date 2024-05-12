@@ -103,7 +103,7 @@ ALARM = {
 }
 
 
-def alarm_state_command(state: str, delay: int | None) -> dict[str, str]:
+def alarm_state_command(state: str, delay: int | None) -> dict[str, str | int]:
     """Return a zwave command for updating the alarm state."""
     if not (message := ALARM_STATE.get(state)):
         raise ValueError(f"Invalid alarm state command: {state}")
@@ -124,7 +124,7 @@ def alarm_state_command(state: str, delay: int | None) -> dict[str, str]:
     }
 
 
-def alarm_command(alarm: str) -> dict[str, str]:
+def alarm_command(alarm: str) -> dict[str, str | int]:
     """Return a zwave command for sounding an alarm command."""
     if not (property := ALARM.get(alarm)):
         raise ValueError(f"Invalid chime command: {alarm}")
@@ -137,7 +137,7 @@ def alarm_command(alarm: str) -> dict[str, str]:
     }
 
 
-def chime_command(chime: str) -> dict[str, str]:
+def chime_command(chime: str) -> dict[str, str | int]:
     """Return a zwave command for sending a chime."""
     if not (message := CHIME.get(chime)):
         raise ValueError(f"Invalid chime command: {chime}")

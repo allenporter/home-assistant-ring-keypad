@@ -79,6 +79,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         return False
 
+    if device_entry is None:
+        _LOGGER.error(
+            "Failed to setup ring_keypad for device not found %s",
+            entry.options[CONF_DEVICE_ID],
+        )
+        return False
+
     async def async_registry_updated(
         event: Event[dr.EventDeviceRegistryUpdatedData],
     ) -> None:
@@ -89,13 +96,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.debug("Removing Ring Keypad configuration entry")
             await hass.config_entries.async_remove(entry.entry_id)
         elif action == "update":
-            changes = event.data["changes"]
+            changes = event.data["changes"]  # type: ignore[typeddict-item]
             if "name" in changes:
                 _LOGGER.debug("Reloading Ring Keypad configuration entry")
                 await hass.config_entries.async_reload(entry.entry_id)
 
     async def _zwave_set_value(
-        target_device: str | list[str], service_data: dict[str, str], context: Context
+        target_device: str | list[str],
+        service_data: dict[str, str | int],
+        context: Context,
     ) -> None:
         await hass.services.async_call(
             ZWAVE_DOMAIN,
@@ -141,19 +150,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             DOMAIN,
             UPDATE_ALARM_STATE_SERVICE,
             _async_update_alarm_state_service,
-            UPDATE_ALARM_STATE_SCHEMA,
+            UPDATE_ALARM_STATE_SCHEMA,  # type: ignore[arg-type]
         )
         hass.services.async_register(
             DOMAIN,
             CHIME_SERVICE,
             _async_chime_service,
-            CHIME_SCHEMA,
+            CHIME_SCHEMA,  # type: ignore[arg-type]
         )
         hass.services.async_register(
             DOMAIN,
             ALARM_SERVICE,
             _async_alarm_service,
-            ALARM_SCHEMA,
+            ALARM_SCHEMA,  # type: ignore[arg-type]
         )
         hass.data[DOMAIN] = {}
 
