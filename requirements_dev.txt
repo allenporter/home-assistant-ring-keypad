@@ -9,7 +9,7 @@ voluptuous-stubs==0.1.1
 
 # Home Assistant testing dependencies
 pytest-asyncio==0.23.7
-pytest-homeassistant-custom-component==0.13.124
+pytest-homeassistant-custom-component==0.13.125
 syrupy==4.6.1
 
 # Component dependencies
