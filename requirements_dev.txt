@@ -7,7 +7,7 @@ ruff==0.5.5
 voluptuous-stubs==0.1.1
 
 # Home Assistant testing dependencies
-pytest-homeassistant-custom-component==0.13.147
+pytest-homeassistant-custom-component==0.13.148
 syrupy==4.6.1
 
 # Component dependencies
