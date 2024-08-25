@@ -8,7 +8,7 @@ voluptuous-stubs==0.1.1
 
 # Home Assistant testing dependencies
 pytest-homeassistant-custom-component==0.13.154
-syrupy==4.6.1
+syrupy>=4.6.1
 
 # Component dependencies
 hassil>=1.7.0
