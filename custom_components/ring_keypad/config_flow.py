@@ -34,7 +34,7 @@ OPTIONS_FLOW = {
 }
 
 
-class RingKeypadConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):  # type: ignore[call-arg]
+class RingKeypadConfigFlowHandler(SchemaConfigFlowHandler, domain=DOMAIN):
     """Handle a config flow for Switch as X."""
 
     config_flow = CONFIG_FLOW

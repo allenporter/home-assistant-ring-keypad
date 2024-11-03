@@ -1,6 +1,6 @@
 """Fixtures for the custom component."""
 
-from collections.abc import Generator
+from collections.abc import Generator, AsyncGenerator
 import logging
 from unittest.mock import patch
 
@@ -44,7 +44,7 @@ async def mock_setup_integration(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     platforms: list[Platform],
-) -> None:
+) -> AsyncGenerator[None, None]:
     """Set up the integration."""
     config_entry.add_to_hass(hass)
 
@@ -68,12 +68,13 @@ async def mock_zwave_device_id(
     hass: HomeAssistant,
     device_registry: dr.DeviceRegistry,
     zwave_config_entry: MockConfigEntry,
-) -> None:
+) -> str:
     device_entry = device_registry.async_get_or_create(
         config_entry_id=zwave_config_entry.entry_id,
         identifiers={("zwave_js", "12:34:56:AB:CD:EF")},
         name="Device name",
     )
+    assert device_entry
     return device_entry.id
 
 

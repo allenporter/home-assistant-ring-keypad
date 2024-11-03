@@ -6,14 +6,7 @@ https://github.com/ImSorryButWho/HomeAssistantNotes/blob/main/RingKeypadV2.md
 
 import enum
 
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMING,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_PENDING,
-    STATE_ALARM_TRIGGERED,
-)
+from homeassistant.components.alarm_control_panel import AlarmControlPanelState
 
 from .const import DEFAULT_DELAY
 
@@ -76,12 +69,12 @@ class NotificationSound(enum.IntEnum):
 
 # Mapping of Home Assistant entity state to keypad messages
 ALARM_STATE = {
-    STATE_ALARM_ARMED_AWAY: Message.ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME: Message.ARMED_HOME,
-    STATE_ALARM_ARMING: Delay.EXIT_DELAY,
-    STATE_ALARM_DISARMED: Message.DISARMED,
-    STATE_ALARM_PENDING: Delay.ENTRY_DELAY,
-    STATE_ALARM_TRIGGERED: Message.BURGLAR_ALARM,
+    AlarmControlPanelState.ARMED_AWAY: Message.ARMED_AWAY,
+    AlarmControlPanelState.ARMED_HOME: Message.ARMED_HOME,
+    AlarmControlPanelState.ARMING: Delay.EXIT_DELAY,
+    AlarmControlPanelState.DISARMED: Message.DISARMED,
+    AlarmControlPanelState.PENDING: Delay.ENTRY_DELAY,
+    AlarmControlPanelState.TRIGGERED: Message.BURGLAR_ALARM,
 }
 
 CHIME = {
@@ -103,7 +96,9 @@ ALARM = {
 }
 
 
-def alarm_state_command(state: str, delay: int | None) -> dict[str, str | int]:
+def alarm_state_command(
+    state: AlarmControlPanelState, delay: int | None
+) -> dict[str, str | int]:
     """Return a zwave command for updating the alarm state."""
     if not (message := ALARM_STATE.get(state)):
         raise ValueError(f"Invalid alarm state command: {state}")

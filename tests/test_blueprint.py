@@ -52,7 +52,9 @@ async def mock_delay_time() -> int:
 
 
 @pytest.fixture(name="alarm_control_panel")
-async def mock_alarm_control_panel(hass: HomeAssistant, arming_time: int, delay_time: int) -> MockConfigEntry:
+async def mock_alarm_control_panel(
+    hass: HomeAssistant, arming_time: int, delay_time: int
+) -> MockConfigEntry:
     assert await async_setup_component(
         hass,
         "alarm_control_panel",
@@ -98,7 +100,7 @@ async def mock_automation(
 @pytest.fixture
 def events(hass: HomeAssistant) -> list[Event[Mapping[str, Any]]]:
     """Fixture that catches notify events."""
-    return async_capture_events(hass, "notify")
+    return async_capture_events(hass, "notify")  # type: ignore[no-any-return]
 
 
 @pytest.mark.parametrize(
@@ -216,13 +218,55 @@ async def test_keypad_input(
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 @pytest.mark.parametrize("automation_yaml", [KEYPAD_ALARM_AUTOMATION_YAML])
 @pytest.mark.parametrize(
-    ("alarm_service", "service_data", "arming_time", "delay_time", "expected_state", "expected_zwave_value"),
+    (
+        "alarm_service",
+        "service_data",
+        "arming_time",
+        "delay_time",
+        "expected_state",
+        "expected_zwave_value",
+    ),
     [
-        ("alarm_arm_home", {}, 0, 0, "armed_home", {"property": 10, "property_key": 1, "value": 100}),
-        ("alarm_arm_away", {}, 0, 0,"armed_away", {"property": 11, "property_key": 1, "value": 100}),
-        ("alarm_trigger", {}, 0, 0, "triggered", {"property": 13, "property_key": 1, "value": 100}),
-        ("alarm_trigger", {}, 0, 60, "pending",  {"property": 17, "property_key": 7, "value": 45}),
-        ("alarm_arm_away", {}, 60, 0, "arming",  {"property": 18, "property_key": 7, "value": 50}),
+        (
+            "alarm_arm_home",
+            {},
+            0,
+            0,
+            "armed_home",
+            {"property": 10, "property_key": 1, "value": 100},
+        ),
+        (
+            "alarm_arm_away",
+            {},
+            0,
+            0,
+            "armed_away",
+            {"property": 11, "property_key": 1, "value": 100},
+        ),
+        (
+            "alarm_trigger",
+            {},
+            0,
+            0,
+            "triggered",
+            {"property": 13, "property_key": 1, "value": 100},
+        ),
+        (
+            "alarm_trigger",
+            {},
+            0,
+            60,
+            "pending",
+            {"property": 17, "property_key": 7, "value": 45},
+        ),
+        (
+            "alarm_arm_away",
+            {},
+            60,
+            0,
+            "arming",
+            {"property": 18, "property_key": 7, "value": 50},
+        ),
     ],
 )
 async def test_keypad_mode(
@@ -234,7 +278,7 @@ async def test_keypad_mode(
     alarm_service: str,
     service_data: dict[str, Any],
     expected_state: str,
-    expected_zwave_value: str,
+    expected_zwave_value: dict[str, Any],
 ) -> None:
     """Test alarm control panel states are passed on to the keypad."""
     # Verify automation is loaded
@@ -272,7 +316,6 @@ async def test_keypad_mode(
 
     error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
     assert len(error_logs) == 0
-
 
 
 @pytest.mark.parametrize("expected_lingering_timers", [True])

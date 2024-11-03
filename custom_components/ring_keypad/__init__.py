@@ -150,19 +150,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             DOMAIN,
             UPDATE_ALARM_STATE_SERVICE,
             _async_update_alarm_state_service,
-            UPDATE_ALARM_STATE_SCHEMA,  # type: ignore[arg-type]
+            UPDATE_ALARM_STATE_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             CHIME_SERVICE,
             _async_chime_service,
-            CHIME_SCHEMA,  # type: ignore[arg-type]
+            CHIME_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             ALARM_SERVICE,
             _async_alarm_service,
-            ALARM_SCHEMA,  # type: ignore[arg-type]
+            ALARM_SCHEMA,
         )
         hass.data[DOMAIN] = {}
 

@@ -30,6 +30,7 @@ async def test_device_registry(
     """Test event entity default state."""
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert config_entry.entry_id in device_entry.config_entries
 
 
@@ -46,6 +47,7 @@ async def test_remove_device(
     assert config_entry.state == config_entries.ConfigEntryState.LOADED
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert zwave_config_entry.entry_id in device_entry.config_entries
     assert config_entry.entry_id in device_entry.config_entries
 
@@ -80,6 +82,7 @@ async def test_rename_device(
     assert config_entry.state == config_entries.ConfigEntryState.LOADED
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert zwave_config_entry.entry_id in device_entry.config_entries
     assert config_entry.entry_id in device_entry.config_entries
 
@@ -119,6 +122,7 @@ async def test_set_alarm_state_services(
     """Test event entity default state."""
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert config_entry.entry_id in device_entry.config_entries
 
     call_service = async_mock_service(hass, "zwave_js", "set_value")
@@ -166,6 +170,7 @@ async def test_chime_service(
     """Test event entity default state."""
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert config_entry.entry_id in device_entry.config_entries
 
     call_service = async_mock_service(hass, "zwave_js", "set_value")
@@ -210,6 +215,7 @@ async def test_alarm_service(
     """Test event entity default state."""
 
     device_entry = device_registry.async_get(zwave_device_id)
+    assert device_entry
     assert config_entry.entry_id in device_entry.config_entries
 
     call_service = async_mock_service(hass, "zwave_js", "set_value")
