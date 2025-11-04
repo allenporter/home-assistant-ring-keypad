@@ -11,8 +11,9 @@ from homeassistant.const import Platform, ATTR_DEVICE_ID, CONF_DEVICE_ID
 from homeassistant.core import HomeAssistant, ServiceCall, Context
 from homeassistant.helpers.event import Event, async_track_device_registry_updated_event
 from homeassistant.helpers import device_registry as dr, config_validation as cv
-from homeassistant.helpers.service import (
+from homeassistant.helpers.target import (
     async_extract_referenced_entity_ids,
+    TargetSelectorData,
 )
 
 from .const import DOMAIN
@@ -120,7 +121,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def _async_update_alarm_state_service(call: ServiceCall) -> None:
         """Update the Ring Keypad to reflect the alarm state."""
-        referenced = async_extract_referenced_entity_ids(hass, call)
+        referenced = async_extract_referenced_entity_ids(
+            hass, TargetSelectorData(call.data)
+        )
         await _zwave_set_value(
             target_device=list(referenced.referenced_devices),
             service_data=alarm_state_command(
@@ -131,7 +134,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def _async_chime_service(call: ServiceCall) -> None:
         """Send a chime to the Ring Keypad."""
-        referenced = async_extract_referenced_entity_ids(hass, call)
+        referenced = async_extract_referenced_entity_ids(
+            hass, TargetSelectorData(call.data)
+        )
         await _zwave_set_value(
             target_device=list(referenced.referenced_devices),
             service_data=chime_command(call.data[CONF_CHIME]),
@@ -140,7 +145,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def _async_alarm_service(call: ServiceCall) -> None:
         """Send an alarm to the Ring Keypad."""
-        referenced = async_extract_referenced_entity_ids(hass, call)
+        referenced = async_extract_referenced_entity_ids(
+            hass, TargetSelectorData(call.data)
+        )
         await _zwave_set_value(
             target_device=list(referenced.referenced_devices),
             service_data=alarm_command(call.data[CONF_ALARM]),
