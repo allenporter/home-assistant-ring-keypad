@@ -1,9 +1,10 @@
 update_alarm_state:
-  target:
-    device:
-      integration: zwave_js
-      manufacturer: Ring
   fields:
+    device_id:
+      required: true
+      filter:
+        - integration: zwave_js
+          manufacturer: Ring
     alarm_state:
       required: true
       example: "armed_away"
@@ -18,11 +19,13 @@ update_alarm_state:
             - "pending"
             - "triggered"
 chime:
-  target:
-    device:
-      integration: zwave_js
-      manufacturer: Ring
   fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          - integration: zwave_js
+            manufacturer: Ring
     chime:
       required: true
       example: "double_beep"
@@ -36,11 +39,13 @@ chime:
             - "bing_bong"
             - "doorbell"
 alarm:
-  target:
-    device:
-      integration: zwave_js
-      manufacturer: Ring
   fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          - integration: zwave_js
+            manufacturer: Ring
     alarm:
       required: true
       example: "generic"

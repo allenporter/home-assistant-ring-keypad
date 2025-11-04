@@ -35,6 +35,7 @@ UPDATE_ALARM_STATE_SERVICE = "update_alarm_state"
 UPDATE_ALARM_STATE_SCHEMA = vol.All(
     vol.Schema(
         {
+            vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_ALARM_STATE): cv.string,
             vol.Optional(CONF_DELAY): vol.Any(cv.positive_int, None),
             **cv.ENTITY_SERVICE_FIELDS,
@@ -47,6 +48,7 @@ CHIME_SERVICE = "chime"
 CHIME_SCHEMA = vol.All(
     vol.Schema(
         {
+            vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_CHIME): cv.string,
             **cv.ENTITY_SERVICE_FIELDS,
         }
@@ -58,6 +60,7 @@ ALARM_SERVICE = "alarm"
 ALARM_SCHEMA = vol.All(
     vol.Schema(
         {
+            vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_ALARM): cv.string,
             **cv.ENTITY_SERVICE_FIELDS,
         }
