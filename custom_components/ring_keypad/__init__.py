@@ -11,10 +11,6 @@ from homeassistant.const import Platform, ATTR_DEVICE_ID, CONF_DEVICE_ID
 from homeassistant.core import HomeAssistant, ServiceCall, Context
 from homeassistant.helpers.event import Event, async_track_device_registry_updated_event
 from homeassistant.helpers import device_registry as dr, config_validation as cv
-from homeassistant.helpers.target import (
-    async_extract_referenced_entity_ids,
-    TargetSelectorData,
-)
 
 from .const import DOMAIN
 from .model import alarm_state_command, chime_command, alarm_command
