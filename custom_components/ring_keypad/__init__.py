@@ -121,11 +121,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def _async_update_alarm_state_service(call: ServiceCall) -> None:
         """Update the Ring Keypad to reflect the alarm state."""
-        referenced = async_extract_referenced_entity_ids(
-            hass, TargetSelectorData(call.data)
-        )
         await _zwave_set_value(
-            target_device=list(referenced.referenced_devices),
+            target_device=list(call.data[ATTR_DEVICE_ID]),
             service_data=alarm_state_command(
                 call.data[CONF_ALARM_STATE], call.data.get(CONF_DELAY)
             ),
@@ -134,22 +131,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     async def _async_chime_service(call: ServiceCall) -> None:
         """Send a chime to the Ring Keypad."""
-        referenced = async_extract_referenced_entity_ids(
-            hass, TargetSelectorData(call.data)
-        )
         await _zwave_set_value(
-            target_device=list(referenced.referenced_devices),
+            target_device=list(call.data[ATTR_DEVICE_ID]),
             service_data=chime_command(call.data[CONF_CHIME]),
             context=call.context,
         )
 
     async def _async_alarm_service(call: ServiceCall) -> None:
         """Send an alarm to the Ring Keypad."""
-        referenced = async_extract_referenced_entity_ids(
-            hass, TargetSelectorData(call.data)
-        )
         await _zwave_set_value(
-            target_device=list(referenced.referenced_devices),
+            target_device=list(call.data[ATTR_DEVICE_ID]),
             service_data=alarm_command(call.data[CONF_ALARM]),
             context=call.context,
         )

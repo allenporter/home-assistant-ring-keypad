@@ -2,8 +2,9 @@ update_alarm_state:
   fields:
     device_id:
       required: true
-      filter:
-        - integration: zwave_js
+      selector:
+        device:
+          integration: zwave_js
           manufacturer: Ring
     alarm_state:
       required: true
@@ -24,8 +25,8 @@ chime:
       required: true
       selector:
         device:
-          - integration: zwave_js
-            manufacturer: Ring
+          integration: zwave_js
+          manufacturer: Ring
     chime:
       required: true
       example: "double_beep"
@@ -44,8 +45,8 @@ alarm:
       required: true
       selector:
         device:
-          - integration: zwave_js
-            manufacturer: Ring
+          integration: zwave_js
+          manufacturer: Ring
     alarm:
       required: true
       example: "generic"
