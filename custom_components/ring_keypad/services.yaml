@@ -2,10 +2,13 @@ update_alarm_state:
   fields:
     device_id:
       required: true
+      example: "8f4219cfa57e23f6f669c4616c2205e2"
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Ring
+          filter:
+            - integration: zwave_js
+              manufacturer: Ring
+
     alarm_state:
       required: true
       example: "armed_away"
@@ -23,10 +26,12 @@ chime:
   fields:
     device_id:
       required: true
+      example: "8f4219cfa57e23f6f669c4616c2205e2"
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Ring
+          filter:
+            - integration: zwave_js
+              manufacturer: Ring
     chime:
       required: true
       example: "double_beep"
@@ -43,10 +48,12 @@ alarm:
   fields:
     device_id:
       required: true
+      example: "8f4219cfa57e23f6f669c4616c2205e2"
       selector:
         device:
-          integration: zwave_js
-          manufacturer: Ring
+          filter:
+            - integration: zwave_js
+              manufacturer: Ring
     alarm:
       required: true
       example: "generic"
