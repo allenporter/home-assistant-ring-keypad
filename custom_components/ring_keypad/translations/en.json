@@ -1,5 +1,16 @@
 {
   "title": "Ring Keypad",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ring Keypad Setup",
+        "description": "Configure the Ring Keypad integration to enable alarm state updates and notifications.",
+        "data": {
+          "device_id": "Ring Keypad Device"
+        }
+      }
+    }
+  },
   "entity": {
     "entity": {
       "event": {
