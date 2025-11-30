@@ -77,6 +77,10 @@
       "name": "Update alarm state",
       "description": "Set the alarm state on the Ring Keypad.",
       "fields": {
+        "device_id": {
+          "description": "The device(s) to target for this action.",
+          "name": "Device ID(s)"
+        },
         "alarm_state": {
           "name": "Alarm State",
           "description": "The Home Assistant Alarm Control Panel Entity state."
@@ -87,6 +91,10 @@
       "name": "Notify Chime",
       "description": "Send a Chime notification to the Ring Keypad.",
       "fields": {
+        "device_id": {
+          "description": "The device(s) to target for this action.",
+          "name": "Device ID(s)"
+        },
         "chime": {
           "name": "Chime",
           "description": "The chime to send to the Ring Keypad."
@@ -97,6 +105,10 @@
       "name": "Notify Alarm",
       "description": "Send an Alarm notification to the Ring Keypad.",
       "fields": {
+        "device_id": {
+          "description": "The device(s) to target for this action.",
+          "name": "Device ID(s)"
+        },
         "alarm": {
           "name": "Alarm",
           "description": "The alarm to send to the Ring Keypad."
