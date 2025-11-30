@@ -77,7 +77,6 @@ action:
               {% else %}
                 0
               {% endif %}
-          target:
             device_id: "{{ device_id(keypad_entity )}}"
     - conditions:
         - condition: trigger
