@@ -57,6 +57,9 @@ class Delay(enum.IntEnum):
     EXIT_DELAY = 18
 
 
+PROPERTY_KEY_TIMEOUT = "timeout"
+
+
 class NotificationSound(enum.IntEnum):
     """Notification sounds."""
 
@@ -105,7 +108,7 @@ def alarm_state_command(
     property_key = MODE_PROPERTY_KEY
     value = MAX_VALUE
     if isinstance(message, Delay):
-        property_key = 7
+        property_key = PROPERTY_KEY_TIMEOUT
         if delay is None:
             value = DEFAULT_DELAY
         else:

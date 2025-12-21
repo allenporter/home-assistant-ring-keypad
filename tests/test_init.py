@@ -103,8 +103,8 @@ async def test_rename_device(
 @pytest.mark.parametrize(
     ("alarm_state", "delay", "property", "property_key", "value"),
     [
-        ("arming", "45", 18, 7, 45),
-        ("arming", None, 18, 7, 60),
+        ("arming", "45", 18, "timeout", 45),
+        ("arming", None, 18, "timeout", 60),
         ("armed_home", None, 10, 1, 100),
     ],
 )

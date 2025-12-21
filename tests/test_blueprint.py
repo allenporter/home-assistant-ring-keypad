@@ -257,7 +257,7 @@ async def test_keypad_input(
             0,
             60,
             "pending",
-            {"property": 17, "property_key": 7, "value": 45},
+            {"property": 17, "property_key": "timeout", "value": 45},
         ),
         (
             "alarm_arm_away",
@@ -265,7 +265,7 @@ async def test_keypad_input(
             60,
             0,
             "arming",
-            {"property": 18, "property_key": 7, "value": 50},
+            {"property": 18, "property_key": "timeout", "value": 50},
         ),
     ],
 )
