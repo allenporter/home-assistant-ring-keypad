@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 import voluptuous as vol
 
@@ -66,6 +67,30 @@ ALARM_SCHEMA = vol.All(
 )
 
 
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the Ring Keypad component."""
+    _LOGGER.debug("Registering Ring Keypad services")
+    hass.services.async_register(
+        DOMAIN,
+        UPDATE_ALARM_STATE_SERVICE,
+        _async_update_alarm_state_service,
+        UPDATE_ALARM_STATE_SCHEMA,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        CHIME_SERVICE,
+        _async_chime_service,
+        CHIME_SCHEMA,
+    )
+    hass.services.async_register(
+        DOMAIN,
+        ALARM_SERVICE,
+        _async_alarm_service,
+        ALARM_SCHEMA,
+    )
+    return True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up a config entry."""
     device_registry = dr.async_get(hass)
@@ -101,68 +126,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                 _LOGGER.debug("Reloading Ring Keypad configuration entry")
                 await hass.config_entries.async_reload(entry.entry_id)
 
-    async def _zwave_set_value(
-        target_device: str | list[str],
-        service_data: dict[str, str | int],
-        context: Context,
-    ) -> None:
-        await hass.services.async_call(
-            ZWAVE_DOMAIN,
-            ZWAVE_SET_VALUE,
-            service_data=service_data,
-            blocking=True,
-            context=context,
-            target={"device_id": target_device},
-        )
-
-    async def _async_update_alarm_state_service(call: ServiceCall) -> None:
-        """Update the Ring Keypad to reflect the alarm state."""
-        await _zwave_set_value(
-            target_device=list(call.data[ATTR_DEVICE_ID]),
-            service_data=alarm_state_command(
-                call.data[CONF_ALARM_STATE], call.data.get(CONF_DELAY)
-            ),
-            context=call.context,
-        )
-
-    async def _async_chime_service(call: ServiceCall) -> None:
-        """Send a chime to the Ring Keypad."""
-        await _zwave_set_value(
-            target_device=list(call.data[ATTR_DEVICE_ID]),
-            service_data=chime_command(call.data[CONF_CHIME]),
-            context=call.context,
-        )
-
-    async def _async_alarm_service(call: ServiceCall) -> None:
-        """Send an alarm to the Ring Keypad."""
-        await _zwave_set_value(
-            target_device=list(call.data[ATTR_DEVICE_ID]),
-            service_data=alarm_command(call.data[CONF_ALARM]),
-            context=call.context,
-        )
-
-    if DOMAIN not in hass.data:
-        _LOGGER.debug("Registering Ring Keypad services")
-        hass.services.async_register(
-            DOMAIN,
-            UPDATE_ALARM_STATE_SERVICE,
-            _async_update_alarm_state_service,
-            UPDATE_ALARM_STATE_SCHEMA,
-        )
-        hass.services.async_register(
-            DOMAIN,
-            CHIME_SERVICE,
-            _async_chime_service,
-            CHIME_SCHEMA,
-        )
-        hass.services.async_register(
-            DOMAIN,
-            ALARM_SERVICE,
-            _async_alarm_service,
-            ALARM_SCHEMA,
-        )
-        hass.data[DOMAIN] = {}
-
     entry.async_on_unload(
         async_track_device_registry_updated_event(
             hass, device_entry.id, async_registry_updated
@@ -181,4 +144,58 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return await hass.config_entries.async_unload_platforms(
         entry,
         PLATFORMS,
+    )
+
+
+async def _zwave_set_value(
+    hass: HomeAssistant,
+    service_data: dict[str, str | int],
+    context: Context,
+) -> None:
+    _LOGGER.debug("Sending Z-Wave JS set_value command: %s", service_data)
+    await hass.services.async_call(
+        ZWAVE_DOMAIN,
+        ZWAVE_SET_VALUE,
+        service_data=service_data,
+        blocking=True,
+        context=context,
+    )
+
+
+async def _async_update_alarm_state_service(call: ServiceCall) -> None:
+    """Update the Ring Keypad to reflect the alarm state."""
+    service_data: dict[str, Any] = {
+        **alarm_state_command(call.data[CONF_ALARM_STATE], call.data.get(CONF_DELAY)),
+        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+    }
+    await _zwave_set_value(
+        call.hass,
+        service_data=service_data,
+        context=call.context,
+    )
+
+
+async def _async_chime_service(call: ServiceCall) -> None:
+    """Send a chime to the Ring Keypad."""
+    service_data: dict[str, Any] = {
+        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+        **chime_command(call.data[CONF_CHIME]),
+    }
+    await _zwave_set_value(
+        call.hass,
+        service_data=service_data,
+        context=call.context,
+    )
+
+
+async def _async_alarm_service(call: ServiceCall) -> None:
+    """Send an alarm to the Ring Keypad."""
+    service_data: dict[str, Any] = {
+        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+        **alarm_command(call.data[CONF_ALARM]),
+    }
+    await _zwave_set_value(
+        call.hass,
+        service_data=service_data,
+        context=call.context,
     )
