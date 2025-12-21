@@ -105,7 +105,7 @@ def alarm_state_command(
     """Return a zwave command for updating the alarm state."""
     if not (message := ALARM_STATE.get(state)):
         raise ValueError(f"Invalid alarm state command: {state}")
-    property_key = MODE_PROPERTY_KEY
+    property_key: str | int = MODE_PROPERTY_KEY
     value = MAX_VALUE
     if isinstance(message, Delay):
         property_key = PROPERTY_KEY_TIMEOUT
