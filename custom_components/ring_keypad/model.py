@@ -99,6 +99,14 @@ ALARM = {
 }
 
 
+def _format_delay(delay: int | None) -> str:
+    """Format delay value."""
+    total_seconds = delay if delay is not None else 0
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    return f"{minutes}m{seconds}s"
+
+
 def alarm_state_command(
     state: AlarmControlPanelState, delay: int | None
 ) -> dict[str, str | int]:
@@ -106,13 +114,14 @@ def alarm_state_command(
     if not (message := ALARM_STATE.get(state)):
         raise ValueError(f"Invalid alarm state command: {state}")
     property_key: str | int = MODE_PROPERTY_KEY
-    value = MAX_VALUE
+    value: int | str = MAX_VALUE
     if isinstance(message, Delay):
         property_key = PROPERTY_KEY_TIMEOUT
         if delay is None:
             value = DEFAULT_DELAY
         else:
             value = delay
+        value = _format_delay(value)
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,
