@@ -106,6 +106,7 @@ async def test_rename_device(
         ("arming", "45", 18, "timeout", "0m45s"),
         ("arming", None, 18, "timeout", "1m0s"),
         ("armed_home", None, 10, 1, 100),
+        ("triggered", None, 13, 9, 100),
     ],
 )
 async def test_set_alarm_state_services(

@@ -118,7 +118,9 @@ def alarm_state_command(
         raise ValueError(f"Invalid alarm state command: {state}")
     property_key: str | int = MODE_PROPERTY_KEY
     value: int | str = MAX_VALUE
-    if isinstance(message, Delay):
+    if isinstance(message, AlarmSound):
+        property_key = VOLUME_PROPERTY_KEY
+    elif isinstance(message, Delay):
         property_key = PROPERTY_KEY_TIMEOUT
         if delay is None:
             value = DEFAULT_DELAY
