@@ -49,6 +49,8 @@ chime:
         select:
           translation_key: "chime"
           options:
+            - "invalid_code"
+            - "need_bypass"
             - "double_beep"
             - "guitar_riff"
             - "wind_chime"
@@ -71,8 +73,6 @@ alarm:
         select:
           translation_key: "alarm"
           options:
-            - "invalid_code"
-            - "need_bypass"
             - "generic"
             - "burglar"
             - "smoke"

@@ -114,7 +114,7 @@ async def test_set_alarm_state_services(
     config_entry: MockConfigEntry,
     device_registry: dr.DeviceRegistry,
     alarm_state: str,
-    delay: str,
+    delay: str | None,
     property: int,
     property_key: int,
     value: int,

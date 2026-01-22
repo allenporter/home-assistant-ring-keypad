@@ -35,7 +35,9 @@ UPDATE_ALARM_STATE_SCHEMA = vol.All(
         {
             vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_ALARM_STATE): cv.string,
-            vol.Optional(CONF_DELAY): vol.Any(cv.positive_int, None),
+            vol.Optional(CONF_DELAY): vol.Any(
+                vol.All(vol.Coerce(int), vol.Range(min=0, max=300)), None
+            ),
             **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
