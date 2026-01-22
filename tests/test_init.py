@@ -149,12 +149,14 @@ async def test_set_alarm_state_services(
 
 
 @pytest.mark.parametrize(
-    ("chime", "property", "property_key", "value"),
+    ("chime", "volume", "property", "property_key", "value"),
     [
-        ("wind_chime", 98, 9, 100),
-        ("bing_bong", 99, 9, 100),
-        ("invalid_code", 9, 1, 100),
-        ("need_bypass", 16, 1, 100),
+        ("wind_chime", None, 98, 9, 100),
+        ("wind_chime", 50, 98, 9, 50),
+        ("bing_bong", None, 99, 9, 100),
+        ("invalid_code", None, 9, 1, 100),
+        ("invalid_code", 50, 9, 9, 50),
+        ("need_bypass", None, 16, 1, 100),
     ],
 )
 async def test_chime_service(
@@ -163,6 +165,7 @@ async def test_chime_service(
     config_entry: MockConfigEntry,
     device_registry: dr.DeviceRegistry,
     chime: str,
+    volume: int | None,
     property: int,
     property_key: int,
     value: int,
@@ -180,6 +183,7 @@ async def test_chime_service(
         "chime",
         service_data={
             "chime": chime,
+            "volume": volume,
         },
         blocking=True,
         target={"device_id": [zwave_device_id]},
@@ -196,10 +200,11 @@ async def test_chime_service(
 
 
 @pytest.mark.parametrize(
-    ("alarm", "property", "property_key", "value"),
+    ("alarm", "volume", "property", "property_key", "value"),
     [
-        ("burglar", 13, 1, 100),
-        ("smoke", 14, 1, 100),
+        ("burglar", None, 13, 9, 100),
+        ("smoke", None, 14, 9, 100),
+        ("co2", 50, 15, 9, 50),
     ],
 )
 async def test_alarm_service(
@@ -208,6 +213,7 @@ async def test_alarm_service(
     config_entry: MockConfigEntry,
     device_registry: dr.DeviceRegistry,
     alarm: str,
+    volume: int | None,
     property: int,
     property_key: int,
     value: int,
@@ -225,6 +231,7 @@ async def test_alarm_service(
         "alarm",
         service_data={
             "alarm": alarm,
+            "volume": volume,
         },
         blocking=True,
         target={"device_id": [zwave_device_id]},

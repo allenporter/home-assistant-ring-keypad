@@ -25,6 +25,7 @@ CONF_ALARM_STATE = "alarm_state"
 CONF_DELAY = "delay"
 CONF_CHIME = "chime"
 CONF_ALARM = "alarm"
+CONF_VOLUME = "volume"
 
 ZWAVE_DOMAIN = "zwave_js"
 ZWAVE_SET_VALUE = "set_value"
@@ -50,6 +51,9 @@ CHIME_SCHEMA = vol.All(
         {
             vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_CHIME): cv.string,
+            vol.Optional(CONF_VOLUME): vol.Any(
+                vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
+            ),
             **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
@@ -62,6 +66,9 @@ ALARM_SCHEMA = vol.All(
         {
             vol.Required(ATTR_DEVICE_ID): cv.string,
             vol.Required(CONF_ALARM): cv.string,
+            vol.Optional(CONF_VOLUME): vol.Any(
+                vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
+            ),
             **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
@@ -181,7 +188,7 @@ async def _async_chime_service(call: ServiceCall) -> None:
     """Send a chime to the Ring Keypad."""
     service_data: dict[str, Any] = {
         ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
-        **chime_command(call.data[CONF_CHIME]),
+        **chime_command(call.data[CONF_CHIME], call.data.get(CONF_VOLUME)),
     }
     await _zwave_set_value(
         call.hass,
@@ -194,7 +201,7 @@ async def _async_alarm_service(call: ServiceCall) -> None:
     """Send an alarm to the Ring Keypad."""
     service_data: dict[str, Any] = {
         ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
-        **alarm_command(call.data[CONF_ALARM]),
+        **alarm_command(call.data[CONF_ALARM], call.data.get(CONF_VOLUME)),
     }
     await _zwave_set_value(
         call.hass,

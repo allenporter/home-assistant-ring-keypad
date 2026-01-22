@@ -8,7 +8,6 @@ update_alarm_state:
           filter:
             - integration: zwave_js
               manufacturer: Ring
-
     alarm_state:
       required: true
       example: "armed_away"
@@ -56,6 +55,13 @@ chime:
             - "wind_chime"
             - "bing_bong"
             - "doorbell"
+    volume:
+      required: false
+      example: 50
+      selector:
+        number:
+          min: 1
+          max: 100
 alarm:
   fields:
     device_id:
@@ -78,3 +84,10 @@ alarm:
             - "smoke"
             - "co2"
             - "medical"
+    volume:
+      required: false
+      example: 50
+      selector:
+        number:
+          min: 1
+          max: 100

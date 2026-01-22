@@ -134,30 +134,36 @@ def alarm_state_command(
     }
 
 
-def alarm_command(alarm: str) -> dict[str, str | int]:
+def alarm_command(alarm: str, volume: int | None) -> dict[str, str | int]:
     """Return a zwave command for sounding an alarm command."""
     if not (property := ALARM.get(alarm)):
         raise ValueError(f"Invalid alarm command: {alarm}")
+    value: int = MAX_VALUE
+    if volume is not None:
+        value = volume
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,
         "property": int(property),
         "property_key": VOLUME_PROPERTY_KEY,
-        "value": MAX_VALUE,
+        "value": value,
     }
 
 
-def chime_command(chime: str) -> dict[str, str | int]:
+def chime_command(chime: str, volume: int | None) -> dict[str, str | int]:
     """Return a zwave command for sending a chime."""
     if not (message := CHIME.get(chime)):
         raise ValueError(f"Invalid chime command: {chime}")
     property_key: int = VOLUME_PROPERTY_KEY
-    if not isinstance(message, NotificationSound):
+    value: int = MAX_VALUE
+    if volume is not None:
+        value = volume
+    elif not isinstance(message, NotificationSound):
         property_key = MODE_PROPERTY_KEY
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,
         "property": int(message),
         "property_key": property_key,
-        "value": MAX_VALUE,
+        "value": value,
     }
