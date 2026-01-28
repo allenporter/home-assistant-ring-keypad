@@ -98,6 +98,10 @@
         "chime": {
           "name": "Chime",
           "description": "The chime to send to the Ring Keypad."
+        },
+        "volume": {
+          "name": "Volume",
+          "description": "The volume of the chime."
         }
       }
     },
@@ -112,6 +116,10 @@
         "alarm": {
           "name": "Alarm",
           "description": "The alarm to send to the Ring Keypad."
+        },
+        "volume": {
+          "name": "Volume",
+          "description": "The volume of the alarm."
         }
       }
     }

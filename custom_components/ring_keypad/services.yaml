@@ -8,7 +8,6 @@ update_alarm_state:
           filter:
             - integration: zwave_js
               manufacturer: Ring
-
     alarm_state:
       required: true
       example: "armed_away"
@@ -49,11 +48,20 @@ chime:
         select:
           translation_key: "chime"
           options:
+            - "invalid_code"
+            - "need_bypass"
             - "double_beep"
             - "guitar_riff"
             - "wind_chime"
             - "bing_bong"
             - "doorbell"
+    volume:
+      required: false
+      example: 50
+      selector:
+        number:
+          min: 1
+          max: 100
 alarm:
   fields:
     device_id:
@@ -71,10 +79,15 @@ alarm:
         select:
           translation_key: "alarm"
           options:
-            - "invalid_code"
-            - "need_bypass"
             - "generic"
             - "burglar"
             - "smoke"
             - "co2"
             - "medical"
+    volume:
+      required: false
+      example: 50
+      selector:
+        number:
+          min: 1
+          max: 100
