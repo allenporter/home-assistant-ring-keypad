@@ -1,9 +1,8 @@
 # Generic python dependencies
-black==26.1.0
-mypy==1.19.1
 pip==26.0
 pre-commit==4.5.1
 ruff==0.14.14
+ty==0.0.14
 voluptuous-stubs==0.1.1
 
 # Home Assistant testing dependencies

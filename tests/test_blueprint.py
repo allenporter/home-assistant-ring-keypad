@@ -100,7 +100,7 @@ async def mock_automation(
 @pytest.fixture
 def events(hass: HomeAssistant) -> list[Event[Mapping[str, Any]]]:
     """Fixture that catches notify events."""
-    return async_capture_events(hass, "notify")  # type: ignore[no-any-return]
+    return async_capture_events(hass, "notify")
 
 
 @pytest.mark.parametrize(
