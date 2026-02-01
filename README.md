@@ -49,8 +49,8 @@ Sets the state of the Ring Keypad from the current state of an [Alarm Control Pa
 
 The service allows specifying a delay for the `arming` and `pending` states
 which are used for the countdown announcements. Any delay is just for the
-anonuncement, and must be kept in sync with the actual alarm control panel
-behavior. Keypad itself will not transition to an amrmed or triggered state
+announcement, and must be kept in sync with the actual alarm control panel
+behavior. Keypad itself will not transition to an armed or triggered state
 itself.
 
 ```
@@ -75,12 +75,15 @@ itself.
 
 The Alarm service will sound an alarm from the Ring Keypad.
 
+The service allows specifying the volume for the alarm.
+
 ```
 - service: ring_keypad.alarm
   target:
     device_id: < device id >
   data:
     alarm: burglar
+    volume: 50  # Optional
 ```
 
 | `alarm`   | Description                                                                                            |
@@ -96,12 +99,15 @@ The Alarm service will sound an alarm from the Ring Keypad.
 The Chime service will send a message to the Ring Keypad to play the
 specified chime sound.
 
+The service allows specifying the volume for the chime.
+
 ```
 - service: ring_keypad.chime
   target:
     device_id: XXXXX
   data:
     chime: double_beep
+    volume: 50  # Optional
 ```
 
 | `chime`        | Description                                                |

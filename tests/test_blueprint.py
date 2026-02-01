@@ -249,7 +249,7 @@ async def test_keypad_input(
             0,
             0,
             "triggered",
-            {"property": 13, "property_key": 1, "value": 100},
+            {"property": 13, "property_key": 9, "value": 100},
         ),
         (
             "alarm_trigger",
