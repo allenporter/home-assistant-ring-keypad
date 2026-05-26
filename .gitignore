@@ -10,3 +10,6 @@ __pycache__
 
 **/secrets.yaml
 tmp
+
+# ty
+.ty_cache/
