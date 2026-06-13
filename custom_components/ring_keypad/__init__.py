@@ -130,7 +130,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             _LOGGER.debug("Removing Ring Keypad configuration entry")
             await hass.config_entries.async_remove(entry.entry_id)
         elif action == "update":
-            changes = event.data["changes"]  # type: ignore[typeddict-item]
+            changes = event.data["changes"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-key]
             if "name" in changes:
                 _LOGGER.debug("Reloading Ring Keypad configuration entry")
                 await hass.config_entries.async_reload(entry.entry_id)
