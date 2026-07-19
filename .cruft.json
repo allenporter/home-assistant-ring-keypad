@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component",
-  "commit": "37bc06ab76e2b457a3c6c33e4db11ee61753d499",
+  "commit": "bdfde589599647b9c118432aeb2606cffcf99250",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -12,7 +12,8 @@
       "name": "Ring Keypad",
       "description": "A Home Assistant custom component for the Z-Wave Ring Keypad.",
       "version": "0.2.2",
-      "_template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component"
+      "_template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component",
+      "_commit": "bdfde589599647b9c118432aeb2606cffcf99250"
     }
   },
   "directory": null
