@@ -1,12 +1,7 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests",
-  ],
-  assignees: [
-    "allenporter",
-  ],
+  extends: ["config:recommended", "helpers:pinGitHubActionDigests"],
+  assignees: ["allenporter"],
   packageRules: [
     {
       description: "Silent automerge for minor, patch, pin, and digest updates",
