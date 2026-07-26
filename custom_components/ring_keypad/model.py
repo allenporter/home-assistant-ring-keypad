@@ -10,7 +10,6 @@ from homeassistant.components.alarm_control_panel import AlarmControlPanelState
 
 from .const import DEFAULT_DELAY
 
-
 EVENT_COMMAND_CLASS = "111"
 COMMAND_CLASS = "135"
 ENDPOINT = 0

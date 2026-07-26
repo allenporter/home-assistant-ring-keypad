@@ -1,14 +1,9 @@
 """Tests for the Event Ring Keypad platform."""
 
-import yaml
-
-from homeassistant.core import HomeAssistant
-
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
-
 import pytest
-
+import yaml
+from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 MESSAGE = """
 ---

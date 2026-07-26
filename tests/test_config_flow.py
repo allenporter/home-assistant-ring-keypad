@@ -2,14 +2,12 @@
 
 from unittest.mock import patch
 
-
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResultType
-from homeassistant.core import HomeAssistant
 from homeassistant.const import (
     CONF_DEVICE_ID,
 )
-
+from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import FlowResultType
 
 from custom_components.ring_keypad.const import DOMAIN
 

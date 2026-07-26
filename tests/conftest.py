@@ -1,16 +1,14 @@
 """Fixtures for the custom component."""
 
-from collections.abc import Generator, AsyncGenerator
 import logging
+from collections.abc import AsyncGenerator, Generator
 from unittest.mock import patch
 
 import pytest
-
-from homeassistant.const import Platform, CONF_DEVICE_ID
+from homeassistant.const import CONF_DEVICE_ID, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.setup import async_setup_component
 from homeassistant.helpers import device_registry as dr
-
+from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
@@ -27,7 +25,7 @@ TEST_DOMAIN = "test"
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(
     enable_custom_integrations: None,
-) -> Generator[None, None, None]:
+) -> Generator[None]:
     """Enable custom integration."""
     _ = enable_custom_integrations  # unused
     yield
@@ -44,7 +42,7 @@ async def mock_setup_integration(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     platforms: list[Platform],
-) -> AsyncGenerator[None, None]:
+) -> AsyncGenerator[None]:
     """Set up the integration."""
     config_entry.add_to_hass(hass)
 
