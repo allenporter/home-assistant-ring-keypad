@@ -1,11 +1,9 @@
 """Tests for the Ring Keypad component."""
 
 import pytest
-
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
-
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_mock_service,

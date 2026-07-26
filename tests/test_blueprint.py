@@ -1,23 +1,20 @@
 """Tests for a Ring Keypad blueprint."""
 
-import pathlib
 import logging
-from typing import Any
+import pathlib
 from collections.abc import Mapping
+from typing import Any
 from unittest.mock import patch
 
 import pytest
 import yaml
-
-from homeassistant.core import HomeAssistant, Event
+from homeassistant.core import Event, HomeAssistant
 from homeassistant.setup import async_setup_component
-
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_capture_events,
     async_mock_service,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -6,16 +6,15 @@ from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.const import CONF_DEVICE_ID
-from homeassistant.helpers import device_registry as dr, selector
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import selector
 from homeassistant.helpers.schema_config_entry_flow import (
     SchemaConfigFlowHandler,
     SchemaFlowFormStep,
 )
 
 from .const import DOMAIN
-
 
 CONFIG_FLOW = {
     "user": SchemaFlowFormStep(
