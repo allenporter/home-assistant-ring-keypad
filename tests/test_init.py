@@ -1,6 +1,9 @@
 """Tests for the Ring Keypad component."""
 
+import attr
 import pytest
+
+
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -238,3 +241,47 @@ async def test_alarm_service(
         "property_key": property_key,
         "value": value,
     }
+
+
+async def test_composite_device_id_resolution(
+    hass: HomeAssistant,
+    zwave_device_id: str,
+    zwave_config_entry: MockConfigEntry,
+    device_registry: dr.DeviceRegistry,
+) -> None:
+    """Test setup resolves composite device IDs to real Z-Wave JS device IDs and cleans up helper devices."""
+    composite_id = "composite_device_123"
+
+    ring_entry = MockConfigEntry(
+        data={},
+        domain=DOMAIN,
+        options={
+            "device_id": composite_id,
+        },
+        title="Ring Keypad",
+    )
+    ring_entry.add_to_hass(hass)
+
+    helper_device = device_registry.async_get_or_create(
+        config_entry_id=ring_entry.entry_id,
+        identifiers={(DOMAIN, "keypad_helper")},
+        name="Orphaned Keypad Helper",
+    )
+    assert helper_device
+
+    zwave_device = device_registry.async_get(zwave_device_id)
+    assert zwave_device
+
+    # Re-create real HA 2026.8 composite device split state using standard registry indexing
+    device_registry.devices[zwave_device.id] = attr.evolve(
+        zwave_device, composite_device_id=composite_id
+    )
+    device_registry.devices[helper_device.id] = attr.evolve(
+        helper_device, composite_device_id=composite_id
+    )
+
+    assert await hass.config_entries.async_setup(ring_entry.entry_id)
+    await hass.async_block_till_done()
+
+    # CONF_DEVICE_ID in options should be updated from composite_id to zwave_device_id
+    assert ring_entry.options["device_id"] == zwave_device_id

@@ -45,6 +45,7 @@ async def async_setup_entry(
             RingKeypadEventEntity(
                 config_entry.entry_id,
                 device_entry,
+                zwave_device_id=config_entry.options[CONF_DEVICE_ID],
             )
         ]
     )
@@ -59,10 +60,15 @@ class RingKeypadEventEntity(EventEntity):
     _attr_should_poll = False
     _attr_translation_key = "keypad_event"
 
-    def __init__(self, config_entry_id: str, device_entry: dr.DeviceEntry) -> None:
+    def __init__(
+        self,
+        config_entry_id: str,
+        device_entry: dr.DeviceEntry,
+        zwave_device_id: str | None = None,
+    ) -> None:
         """Initialize RingKeypadEventEntity."""
         self._attr_unique_id = config_entry_id
-        self._device_id = device_entry.id
+        self._device_id = zwave_device_id or device_entry.id
         self.device_entry = device_entry
         self._attr_device_info = None
 

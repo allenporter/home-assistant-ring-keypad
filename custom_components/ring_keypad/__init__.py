@@ -12,6 +12,8 @@ from homeassistant.core import Context, HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import Event, async_track_device_registry_updated_event
+from homeassistant.helpers.helper_integration import async_remove_helper_devices
+
 
 from .const import DOMAIN
 from .model import alarm_command, alarm_state_command, chime_command
@@ -100,20 +102,49 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up a config entry."""
     device_registry = dr.async_get(hass)
+    stored_device_id = entry.options[CONF_DEVICE_ID]
+
+    if device_registry.async_is_composite_device_id(stored_device_id):
+        split_devices = device_registry.async_get_devices_for_composite_device_id(
+            stored_device_id
+        )
+        zwave_device = next(
+            (
+                d
+                for d in split_devices
+                if d.config_entry_id
+                and (c_entry := hass.config_entries.async_get_entry(d.config_entry_id))
+                and c_entry.domain == ZWAVE_DOMAIN
+            ),
+            None,
+        )
+        if zwave_device:
+            stored_device_id = zwave_device.id
+            hass.config_entries.async_update_entry(
+                entry,
+                options={**entry.options, CONF_DEVICE_ID: zwave_device.id},
+            )
+
+    async_remove_helper_devices(
+        hass,
+        helper_config_entry_id=entry.entry_id,
+        source_device_id=stored_device_id,
+        remove_all_devices=True,
+    )
 
     try:
-        device_entry = device_registry.async_get(entry.options[CONF_DEVICE_ID])
+        device_entry = device_registry.async_get(stored_device_id)
     except vol.Invalid:
         _LOGGER.error(
             "Failed to setup ring_keypad for unknown device %s",
-            entry.options[CONF_DEVICE_ID],
+            stored_device_id,
         )
         return False
 
     if device_entry is None:
         _LOGGER.error(
             "Failed to setup ring_keypad for device not found %s",
-            entry.options[CONF_DEVICE_ID],
+            stored_device_id,
         )
         return False
 
