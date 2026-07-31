@@ -2,10 +2,12 @@
 
 import pytest
 import yaml
-from custom_components.ring_keypad.const import DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.ring_keypad.const import DOMAIN
+
 
 MESSAGE = """
 ---
