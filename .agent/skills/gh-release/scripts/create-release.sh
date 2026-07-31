@@ -37,8 +37,8 @@ fi
 
 MANIFEST_PATH=$MANIFEST_FILES
 
-# Using python to update the json file to avoid issues with sed
-python -c "import json; data = json.load(open('$MANIFEST_PATH')); data['version'] = '$VERSION'; json.dump(data, open('$MANIFEST_PATH', 'w'), indent=2)"
+PYTHON_BIN=$(command -v python3 || command -v python)
+"$PYTHON_BIN" -c "import json; data = json.load(open('$MANIFEST_PATH')); data['version'] = '$VERSION'; json.dump(data, open('$MANIFEST_PATH', 'w'), indent=2)"
 
 git add "$MANIFEST_PATH"
 git commit -m "chore(release): $VERSION"
