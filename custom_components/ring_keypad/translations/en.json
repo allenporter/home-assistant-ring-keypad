@@ -12,8 +12,9 @@
     }
   },
   "entity": {
-    "entity": {
-      "event": {
+    "event": {
+      "keypad_event": {
+        "name": "Button",
         "state_attributes": {
           "event_type": {
             "state": {

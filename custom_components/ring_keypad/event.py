@@ -9,7 +9,6 @@ from homeassistant.const import CONF_DEVICE_ID
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .model import KEYAD_EVENTS
@@ -64,9 +63,8 @@ class RingKeypadEventEntity(EventEntity):
         """Initialize RingKeypadEventEntity."""
         self._attr_unique_id = config_entry_id
         self._device_id = device_entry.id
-        self._attr_device_info = DeviceInfo(
-            identifiers=device_entry.identifiers,
-        )
+        self.device_entry = device_entry
+        self._attr_device_info = None
 
     @callback
     def _async_handle_event(self, event: Event[dict[str, Any]]) -> None:
