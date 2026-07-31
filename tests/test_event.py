@@ -2,11 +2,9 @@
 
 import pytest
 import yaml
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
-
-from homeassistant.setup import async_setup_component
-from custom_components.ring_keypad.const import DOMAIN
 
 MESSAGE = """
 ---
@@ -25,13 +23,15 @@ event_data: {event_data}
 """
 
 
+@pytest.fixture(name="platforms")
+def mock_platforms() -> list[Platform]:
+    """Fixture for platforms loaded by the integration."""
+    return [Platform.EVENT]
+
+
 @pytest.fixture(autouse=True)
-async def mock_setup_integration(
-    hass: HomeAssistant, config_entry: MockConfigEntry
-) -> None:
+def mock_setup_integration(config_entry: MockConfigEntry) -> None:
     """Setup the integration"""
-    assert await async_setup_component(hass, DOMAIN, {})
-    await hass.async_block_till_done()
 
 
 async def test_default_state(hass: HomeAssistant) -> None:
