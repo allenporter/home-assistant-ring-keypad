@@ -15,6 +15,7 @@ from pytest_homeassistant_custom_component.common import (
 
 from custom_components.ring_keypad.const import (
     DOMAIN,
+    PLATFORMS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,7 +35,7 @@ def auto_enable_custom_integrations(
 @pytest.fixture(name="platforms")
 def mock_platforms() -> list[Platform]:
     """Fixture for platforms loaded by the integration."""
-    return [Platform.ALARM_CONTROL_PANEL]
+    return list(PLATFORMS)
 
 
 @pytest.fixture(name="setup_integration")
