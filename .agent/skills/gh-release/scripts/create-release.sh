@@ -38,7 +38,7 @@ fi
 MANIFEST_PATH=$MANIFEST_FILES
 
 PYTHON_BIN=$(command -v python3 || command -v python)
-"$PYTHON_BIN" -c "import json; data = json.load(open('$MANIFEST_PATH')); data['version'] = '$VERSION'; json.dump(data, open('$MANIFEST_PATH', 'w'), indent=2)"
+"$PYTHON_BIN" -c "import json; data = json.load(open('$MANIFEST_PATH')); data['version'] = '$VERSION'; open('$MANIFEST_PATH', 'w').write(json.dumps(data, indent=2) + '\n')"
 
 git add "$MANIFEST_PATH"
 git commit -m "chore(release): $VERSION"
