@@ -34,12 +34,11 @@ UPDATE_ALARM_STATE_SERVICE = "update_alarm_state"
 UPDATE_ALARM_STATE_SCHEMA = vol.All(
     vol.Schema(
         {
-            vol.Required(ATTR_DEVICE_ID): cv.string,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
             vol.Required(CONF_ALARM_STATE): cv.string,
             vol.Optional(CONF_DELAY): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=0, max=300)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
@@ -49,12 +48,11 @@ CHIME_SERVICE = "chime"
 CHIME_SCHEMA = vol.All(
     vol.Schema(
         {
-            vol.Required(ATTR_DEVICE_ID): cv.string,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
             vol.Required(CONF_CHIME): cv.string,
             vol.Optional(CONF_VOLUME): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
@@ -64,16 +62,16 @@ ALARM_SERVICE = "alarm"
 ALARM_SCHEMA = vol.All(
     vol.Schema(
         {
-            vol.Required(ATTR_DEVICE_ID): cv.string,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
             vol.Required(CONF_ALARM): cv.string,
             vol.Optional(CONF_VOLUME): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
 )
+
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
@@ -175,7 +173,7 @@ async def _async_update_alarm_state_service(call: ServiceCall) -> None:
     """Update the Ring Keypad to reflect the alarm state."""
     service_data: dict[str, Any] = {
         **alarm_state_command(call.data[CONF_ALARM_STATE], call.data.get(CONF_DELAY)),
-        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+        ATTR_DEVICE_ID: cv.ensure_list(call.data[ATTR_DEVICE_ID]),
     }
     await _zwave_set_value(
         call.hass,
@@ -187,7 +185,7 @@ async def _async_update_alarm_state_service(call: ServiceCall) -> None:
 async def _async_chime_service(call: ServiceCall) -> None:
     """Send a chime to the Ring Keypad."""
     service_data: dict[str, Any] = {
-        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+        ATTR_DEVICE_ID: cv.ensure_list(call.data[ATTR_DEVICE_ID]),
         **chime_command(call.data[CONF_CHIME], call.data.get(CONF_VOLUME)),
     }
     await _zwave_set_value(
@@ -200,7 +198,7 @@ async def _async_chime_service(call: ServiceCall) -> None:
 async def _async_alarm_service(call: ServiceCall) -> None:
     """Send an alarm to the Ring Keypad."""
     service_data: dict[str, Any] = {
-        ATTR_DEVICE_ID: list(call.data[ATTR_DEVICE_ID]),
+        ATTR_DEVICE_ID: cv.ensure_list(call.data[ATTR_DEVICE_ID]),
         **alarm_command(call.data[CONF_ALARM], call.data.get(CONF_VOLUME)),
     }
     await _zwave_set_value(

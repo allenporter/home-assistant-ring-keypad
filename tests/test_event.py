@@ -23,8 +23,12 @@ event_data: {event_data}
 
 
 @pytest.fixture(autouse=True)
-def mock_setup_integration(config_entry: MockConfigEntry) -> None:
+async def mock_setup_integration(
+    hass: HomeAssistant, config_entry: MockConfigEntry
+) -> None:
     """Setup the integration"""
+    await hass.async_block_till_done()
+
 
 
 async def test_default_state(hass: HomeAssistant) -> None:
