@@ -180,7 +180,10 @@ async def test_keypad_input(
 
     error_logs = [record for record in caplog.records if record.levelname == "ERROR"]
     assert len(error_logs) == 3
-    assert "invalid_code" in error_logs[0].message or "Invalid alarm code provided" in error_logs[0].message
+    assert (
+        "invalid_code" in error_logs[0].message
+        or "Invalid alarm code provided" in error_logs[0].message
+    )
     caplog.clear()
 
     # Verify device was not notified
