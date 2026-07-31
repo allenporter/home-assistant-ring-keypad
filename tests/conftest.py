@@ -13,10 +13,8 @@ from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
 
-from custom_components.ring_keypad.const import (
-    DOMAIN,
-    PLATFORMS,
-)
+from custom_components.ring_keypad import PLATFORMS
+from custom_components.ring_keypad.const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
