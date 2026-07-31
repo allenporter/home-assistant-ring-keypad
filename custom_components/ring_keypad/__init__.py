@@ -38,7 +38,7 @@ UPDATE_ALARM_STATE_SCHEMA = vol.All(
             vol.Optional(CONF_DELAY): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=0, max=300)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
@@ -52,7 +52,7 @@ CHIME_SCHEMA = vol.All(
             vol.Optional(CONF_VOLUME): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
@@ -66,7 +66,7 @@ ALARM_SCHEMA = vol.All(
             vol.Optional(CONF_VOLUME): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=1, max=100)), None
             ),
-            **cv.ENTITY_SERVICE_FIELDS,
+            vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
         }
     ),
     cv.has_at_least_one_key(ATTR_DEVICE_ID),
