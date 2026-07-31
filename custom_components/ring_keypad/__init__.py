@@ -153,11 +153,36 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
 
+def _resolve_zwave_device_ids(hass: HomeAssistant, device_ids: list[str]) -> list[str]:
+    """Resolve target device IDs to underlying Z-Wave JS device IDs if needed."""
+    device_registry = dr.async_get(hass)
+    ring_entries = {
+        entry.entry_id: entry.options.get(CONF_DEVICE_ID)
+        for entry in hass.config_entries.async_entries(DOMAIN)
+    }
+    resolved_ids: list[str] = []
+    for dev_id in device_ids:
+        dev_entry = device_registry.async_get(dev_id)
+        if (
+            dev_entry
+            and dev_entry.config_entry_id in ring_entries
+            and (zwave_id := ring_entries[dev_entry.config_entry_id])
+        ):
+            resolved_ids.append(zwave_id)
+        else:
+            resolved_ids.append(dev_id)
+    return resolved_ids
+
+
 async def _zwave_set_value(
     hass: HomeAssistant,
-    service_data: dict[str, str | int],
+    service_data: dict[str, Any],
     context: Context,
 ) -> None:
+    if ATTR_DEVICE_ID in service_data:
+        service_data[ATTR_DEVICE_ID] = _resolve_zwave_device_ids(
+            hass, cv.ensure_list(service_data[ATTR_DEVICE_ID])
+        )
     _LOGGER.debug("Sending Z-Wave JS set_value command: %s", service_data)
     await hass.services.async_call(
         ZWAVE_DOMAIN,
