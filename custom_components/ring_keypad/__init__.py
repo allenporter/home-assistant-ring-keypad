@@ -73,7 +73,6 @@ ALARM_SCHEMA = vol.All(
 )
 
 
-
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Ring Keypad component."""
     _LOGGER.debug("Registering Ring Keypad services")

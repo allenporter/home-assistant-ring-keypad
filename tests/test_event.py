@@ -30,7 +30,6 @@ async def mock_setup_integration(
     await hass.async_block_till_done()
 
 
-
 async def test_default_state(hass: HomeAssistant) -> None:
     """Test event entity default state."""
 
