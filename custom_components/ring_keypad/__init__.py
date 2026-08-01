@@ -14,7 +14,6 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.event import Event, async_track_device_registry_updated_event
 from homeassistant.helpers.helper_integration import async_remove_helper_devices
 
-
 from .const import DOMAIN
 from .model import alarm_command, alarm_state_command, chime_command
 
