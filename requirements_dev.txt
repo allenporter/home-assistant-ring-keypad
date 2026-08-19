@@ -2,7 +2,7 @@
 pip==26.2.1
 pre-commit==4.6.2
 ruff==0.16.3
-ty==0.0.72
+ty==0.0.73
 voluptuous-stubs==0.1.1
 
 # Home Assistant testing dependencies
