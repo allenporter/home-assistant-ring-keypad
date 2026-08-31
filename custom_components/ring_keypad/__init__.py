@@ -103,10 +103,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     device_registry = dr.async_get(hass)
     stored_device_id = entry.options[CONF_DEVICE_ID]
 
-    if device_registry.async_is_composite_device_id(stored_device_id):
-        split_devices = device_registry.async_get_devices_for_composite_device_id(
-            stored_device_id
-        )
+    if split_devices := device_registry.async_get_devices_for_composite_device_id(
+        stored_device_id
+    ):
         zwave_device = next(
             (
                 d

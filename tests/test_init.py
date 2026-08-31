@@ -268,13 +268,13 @@ async def test_composite_device_id_resolution(
     assert helper_device
 
     zwave_device = device_registry.async_get(zwave_device_id)
-    assert zwave_device
+    assert isinstance(zwave_device, dr.DeviceEntry)
 
-    # Re-create real HA 2026.8 composite device split state using standard registry indexing
-    device_registry.devices[zwave_device.id] = attr.evolve(
+    # Re-create real HA composite device split state using registry items
+    device_registry._devices[zwave_device.id] = attr.evolve(
         zwave_device, composite_device_id=composite_id
     )
-    device_registry.devices[helper_device.id] = attr.evolve(
+    device_registry._devices[helper_device.id] = attr.evolve(
         helper_device, composite_device_id=composite_id
     )
 
