@@ -1,5 +1,7 @@
 """Event entity platform for Ring Keypad."""
 
+from __future__ import annotations
+
 import logging
 from typing import Any
 
@@ -63,7 +65,7 @@ class RingKeypadEventEntity(EventEntity):
     def __init__(
         self,
         config_entry_id: str,
-        device_entry: dr.DeviceEntry,
+        device_entry: dr.DeviceEntry | dr.ChildDeviceEntry,
         zwave_device_id: str | None = None,
     ) -> None:
         """Initialize RingKeypadEventEntity."""
