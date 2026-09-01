@@ -51,7 +51,7 @@ The service allows specifying a delay for the `arming` and `pending` states
 which are used for the countdown announcements. Any delay is just for the
 announcement, and must be kept in sync with the actual alarm control panel
 behavior. Keypad itself will not transition to an armed or triggered state
-itself.
+itself. Volume can be specified for states except `arming` and `pending`.
 
 ```
 - service: ring_keypad.update_alarm_state
@@ -60,6 +60,7 @@ itself.
   data:
     alarm_state: armed_away
     delay: 60  # For `arming` and `pending`
+    volume: 50 # Optional
 ```
 
 | `alarm_state` | Description                                                                                                                                                                  |

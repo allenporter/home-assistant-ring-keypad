@@ -39,6 +39,9 @@ UPDATE_ALARM_STATE_SCHEMA = vol.All(
             vol.Optional(CONF_DELAY): vol.Any(
                 vol.All(vol.Coerce(int), vol.Range(min=0, max=300)), None
             ),
+            vol.Optional(CONF_VOLUME): vol.Any(
+                vol.All(vol.Coerce(int), vol.Range(min=0, max=100)), None
+            ),
             vol.Required(ATTR_DEVICE_ID): cv.ensure_list,
         }
     ),
@@ -224,7 +227,11 @@ async def _zwave_set_value(
 async def _async_update_alarm_state_service(call: ServiceCall) -> None:
     """Update the Ring Keypad to reflect the alarm state."""
     service_data: dict[str, Any] = {
-        **alarm_state_command(call.data[CONF_ALARM_STATE], call.data.get(CONF_DELAY)),
+        **alarm_state_command(
+            call.data[CONF_ALARM_STATE],
+            call.data.get(CONF_DELAY),
+            call.data.get(CONF_VOLUME),
+        ),
         ATTR_DEVICE_ID: cv.ensure_list(call.data[ATTR_DEVICE_ID]),
     }
     await _zwave_set_value(
