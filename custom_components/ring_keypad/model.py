@@ -110,7 +110,7 @@ def _format_delay(delay: int | None) -> str:
 
 
 def alarm_state_command(
-    state: AlarmControlPanelState, delay: int | None
+    state: AlarmControlPanelState, delay: int | None, volume: int | None
 ) -> dict[str, str | int]:
     """Return a zwave command for updating the alarm state."""
     if not (message := ALARM_STATE.get(state)):
@@ -119,6 +119,8 @@ def alarm_state_command(
     value: int | str = MAX_VALUE
     if isinstance(message, AlarmSound):
         property_key = VOLUME_PROPERTY_KEY
+        if volume is not None:
+            value = volume
     elif isinstance(message, Delay):
         property_key = PROPERTY_KEY_TIMEOUT
         if delay is None:
@@ -126,6 +128,9 @@ def alarm_state_command(
         else:
             value = delay
         value = _format_delay(value)
+    elif volume is not None:
+        property_key = VOLUME_PROPERTY_KEY
+        value = volume
     return {
         "command_class": COMMAND_CLASS,
         "endpoint": ENDPOINT,

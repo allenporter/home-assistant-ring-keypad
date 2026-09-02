@@ -97,12 +97,15 @@ async def test_rename_device(
 
 
 @pytest.mark.parametrize(
-    ("alarm_state", "delay", "property", "property_key", "value"),
+    ("alarm_state", "delay", "volume", "property", "property_key", "value"),
     [
-        ("arming", "45", 18, "timeout", "0m45s"),
-        ("arming", None, 18, "timeout", "1m0s"),
-        ("armed_home", None, 10, 1, 100),
-        ("triggered", None, 13, 9, 100),
+        ("arming", "45", None, 18, "timeout", "0m45s"),
+        ("arming", None, None, 18, "timeout", "1m0s"),
+        ("arming", None, 50, 18, "timeout", "1m0s"),
+        ("armed_home", None, None, 10, 1, 100),
+        ("armed_home", None, 50, 10, 9, 50),
+        ("triggered", None, None, 13, 9, 100),
+        ("triggered", None, 50, 13, 9, 50),
     ],
 )
 async def test_set_alarm_state_services(
@@ -112,6 +115,7 @@ async def test_set_alarm_state_services(
     device_registry: dr.DeviceRegistry,
     alarm_state: str,
     delay: str | None,
+    volume: int | None,
     property: int,
     property_key: int,
     value: int,
@@ -129,6 +133,7 @@ async def test_set_alarm_state_services(
         service_data={
             "alarm_state": alarm_state,
             "delay": delay,
+            "volume": volume,
         },
         blocking=True,
         target={"device_id": [zwave_device_id]},

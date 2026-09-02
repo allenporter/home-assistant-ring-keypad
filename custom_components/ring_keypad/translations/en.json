@@ -85,6 +85,10 @@
         "alarm_state": {
           "name": "Alarm State",
           "description": "The Home Assistant Alarm Control Panel Entity state."
+        },
+        "volume": {
+          "name": "Volume",
+          "description": "The volume of the audio announcement. Not applicable when the alarm_state is \"arming\" or \"pending\"."
         }
       }
     },
