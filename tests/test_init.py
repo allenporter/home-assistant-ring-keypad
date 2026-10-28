@@ -46,7 +46,7 @@ async def test_remove_device(
 
     device_entry = device_registry.async_get(zwave_device_id)
     assert device_entry
-    assert zwave_config_entry.entry_id in device_entry.config_entries
+    assert device_entry.config_entry_id == zwave_config_entry.entry_id
 
     # Entity is registered
     state = hass.states.get("event.device_name_button")
@@ -80,7 +80,7 @@ async def test_rename_device(
 
     device_entry = device_registry.async_get(zwave_device_id)
     assert device_entry
-    assert zwave_config_entry.entry_id in device_entry.config_entries
+    assert device_entry.config_entry_id == zwave_config_entry.entry_id
 
     # Entity is registered
     state = hass.states.get("event.device_name_button")
