@@ -1,2 +1,1 @@
 [tool.ty.rules]
-invalid-return-type = "ignore"
