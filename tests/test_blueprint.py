@@ -51,7 +51,7 @@ async def mock_delay_time() -> int:
 @pytest.fixture(name="alarm_control_panel")
 async def mock_alarm_control_panel(
     hass: HomeAssistant, arming_time: int, delay_time: int
-) -> MockConfigEntry:
+) -> None:
     assert await async_setup_component(
         hass,
         "alarm_control_panel",
